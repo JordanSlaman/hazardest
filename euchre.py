@@ -35,86 +35,164 @@ class Player:
     def __unicode__(self):
         return self.position
 
-    def print_turn(self):
+    def explain(self):
         print """
         Player in the {pos} position, it is your turn.
         You have the following cards: {cards}
         What would you like to do?
-        0, 1, 2, 3, 4 to play that card
+        """.format(
+            pos=self.position,
+            cards=[card for card in enumerate(map(unicode, self.cards))]
+        )
+
+    def cards_left(self):
+        return len(self.cards)
+
+
+class Turn:
+
+    def __init__(self, hand):
+        self.hand = hand
+        self.explain()
+        self.interpret(raw_input())
+
+    def explain(self):
+        raise NotImplemented
+
+    def interpret(self, string):
+        raise NotImplemented
+
+
+class TrumpTurn(Turn):
+
+    def explain(self):
+        print """
+        We are currently determining the trump suit.
+        The revealed card is: {revealed}
+        """.format(revealed=unicode(self.hand.revealed))
+        self.hand.active_player.explain()
+        print """
         S, C, H, D to choose a suit.
-        - can't yet go alone
-        """.format(pos=self.position,
-                   cards=[card for card in enumerate(map(unicode, self.cards))])
+        P to pass."""
+
+    def interpret(self, string):
+        self.complete = False
+        suits = (('Diamonds', 'd', 'D'),
+                 ('Clubs', 'c', 'C'),
+                 ('Hearts', 'h', 'H'),
+                 ('Spades', 's', 'S'))
+
+        valid_input = False
+        for suit in suits:
+            if string in suit:
+                valid_input = True
+                self.complete = self.hand.set_trump(suit[0])
+        if string in ['p','P']:
+            valid_input = True
+            print "{player} passes".format(player=unicode(self.hand.active_player))
+            self.complete = True
+
+        if not valid_input:
+            print "Bad input."
+        if not self.complete:
+            self.interpret(raw_input())
+
+class TrickTurn(Turn):
+
+    def explain(self):
+        print """
+        The following cards have been played: {history}
+        """.format(history=self.hand.cards_played)
+        self.hand.active_player.explain()
+        print """
+        0-{n} to play a card.""".format(n=self.hand.active_player.cards_left()-1)
+
+    def interpret(self, string):
+        player = self.hand.active_player
+        self.complete = False
+
+        if int(string) in range(player.cards_left()-1):
+            card = player.cards[int(string)]
+            self.complete = self.hand.play_card(card)
+        else:
+            print "Bad input."
+
+        if not self.complete:
+            self.interpret(raw_input())
 
 class Hand:
 
-    def __init__(self, players, dealer):
+    def __init__(self, players, hands_played):
+        self.players, self.hands_played = players, hands_played
+        self.dealer = self.players[hands_played % 4]
+
         self.deck = Deck()
-        getnext = self.deck.__next__
+        next_card = self.deck.__next__
 
         for i in range(5):
             for p in players:
-                p.cards.append(getnext())
+                p.cards.append(next_card())
 
         self.trump = None
-        self.revealed = getnext()
-        self.dealer = dealer
+        self.revealed = next_card()
 
-        states = ['picking trump', 'playing tricks', 'finished']
-        self.state = states[0]
+        self.active_player = self.player_to_left(self.dealer)
+        self.turns_played = 0
+        self.cards_played = []
 
+        while not self.is_over():
+            self.explain()
 
-    def execute_turn(self, player):
+            if self.trump is None:
+                self.turn = TrumpTurn(self)
+            else:
+                self.turn = TrickTurn(self)
 
-        if self.state == 'finished':
-            exit()
+            self.turns_played += 1
+            self.active_player = self.player_to_left(self.active_player)
 
-        if self.state == 'picking trump':
-            print """
-            We are currently determining the trump suit.
-            The revealed card is: {revealed}
-            The dealer is: {dealer}
-            """.format(revealed=unicode(self.revealed),
-                       dealer=unicode(self.dealer))
+    def is_over(self):
+        end_contitions = [bool([p for p in self.players if p.cards_left() == 0]), # Players have naturally exhausted their cards.
+                          ]# self.active_player is self.player_to_left(self.dealer) and self.turns_played != 0] # Players could not determine trump.
 
-        if self.state == 'playing tricks':
-            print """
-            We are currently determining the trump suit.
-            The revealed card is: {revealed}
-            The dealer is: {dealer}
-            """.format(revealed=unicode(self.revealed),
-                       dealer=unicode(self.dealer))
+        return any(end_contitions)
 
+    def player_to_left(self, player):
+        index = self.players.index(player)
+        return self.players[(index + 1) % 4]
 
-        player.print_turn()
-        self.interpret(raw_input(), player)
+    def explain(self):
+        print """
+        Hand # {hand}
+        Turn # {turns}
+        Dealer is: {dealer}
+        Trump is: {trump}
+        Player is: {player}
+        """.format(
+            hand=self.hands_played,
+            dealer=unicode(self.dealer),
+            trump=self.trump,
+            turns=self.turns_played,
+            player=unicode(self.active_player)
+        )
 
-
-    def interpret(self, string, player):
-        if string in ['d', 'D']:
-            self.set_trump('Diamonds', player)
-        elif string in ['c', 'C']:
-            self.set_trump('Clubs', player)
-        elif string in ['h', 'H']:
-            self.set_trump('Hearts', player)
-        elif string in ['s', 'S']:
-            self.set_trump('Spades', player)
-        elif string in ['p','P']:
-            pass
-        elif int(string) in range(5):
-            exit()
-            # self.play card
-        else:
-            print "Invalid input"
-            self.interpret(raw_input())
-
-    def set_trump(self, trump, player):
-        if self.state == 'picking trump' and (self.revealed is None or self.revealed.suit is trump):
+    def set_trump(self, trump):
+        if self.trump is None and (self.revealed is None or self.revealed.suit == trump):
             self.trump = trump
-            self.state = 'playing tricks'
             print "Trump suit is now {}".format(trump)
+            self.active_player = self.dealer
+            return True
         else:
             print "You can not set that as trump!"
+            return False
+
+    def play_card(self, card):
+
+        # logix
+
+        self.cards_played.append(card)
+        self.active_player.cards.remove(card)
+        return True
 
     # def card_ranking(self):
     #     if not self.trump:
@@ -134,21 +212,17 @@ class Game:
         self.players = [Player(position) for position in self.positions]
         self.teams = [Team([p for p in self.players if p.position in self.positions[::2]]),
                       Team([p for p in self.players if p.position in self.positions[1::2]])]
-        self.turn = 0
-        self.hand = Hand(self.players, dealer=self.players[self.turn])
+        self.hands_played = 0
 
         while not self.is_over():
-            self.turn += 1
-            self.hand.execute_turn(self.active_player())
+            self.hand = Hand(self.players, self.hands_played)
+            self.hands_played += 1
 
     def is_over(self):
         for t in self.teams:
             if t.points >= 10:
                 return True
         return False
-
-    def active_player(self):
-        return self.players[self.turn % 4]
 
 
 game = Game()
