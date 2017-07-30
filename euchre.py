@@ -90,6 +90,7 @@ class TrumpTurn(Turn):
         if string in ['p','P']:
             valid_input = True
             print "{player} passes".format(player=unicode(self.hand.active_player))
+            self.hand.active_player = self.hand.player_to_left()
             self.complete = True
 
         if not valid_input:
@@ -120,6 +121,13 @@ class TrickTurn(Turn):
         if not self.complete:
             self.interpret(raw_input())
 
+
+def Trick():
+
+    def __init__(self, hand):
+        self.turn = TrickTurn(hand)
+
+
 class Hand:
 
     def __init__(self, players, hands_played):
@@ -137,27 +145,28 @@ class Hand:
         self.revealed = next_card()
 
         self.active_player = self.player_to_left(self.dealer)
-        self.turns_played = 0
+        self.tricks_played = 0
         self.cards_played = []
 
         while not self.is_over():
             self.explain()
-
             if self.trump is None:
-                self.turn = TrumpTurn(self)
-            else:
-                self.turn = TrickTurn(self)
+                TrumpTurn(self)
 
-            self.turns_played += 1
-            self.active_player = self.player_to_left(self.active_player)
+            self.trick = Trick()
+            self.turn = TrickTurn(self)
+
+            self.tricks_played += 1
 
     def is_over(self):
-        end_contitions = [bool([p for p in self.players if p.cards_left() == 0]), # Players have naturally exhausted their cards.
-                          ]# self.active_player is self.player_to_left(self.dealer) and self.turns_played != 0] # Players could not determine trump.
+        end_conditions = [bool([p for p in self.players if p.cards_left() == 0]),  # Players have naturally exhausted their cards.
+                          self.active_player is self.player_to_left(self.dealer) and self.tricks_played != 0] # Players could not determine trump.
 
-        return any(end_contitions)
+        return any(end_conditions)
 
-    def player_to_left(self, player):
+    def player_to_left(self, player=None):
+        if player is None:
+            player = self.active_player
         index = self.players.index(player)
         return self.players[(index + 1) % 4]
 
@@ -172,7 +181,7 @@ class Hand:
             hand=self.hands_played,
             dealer=unicode(self.dealer),
             trump=self.trump,
-            turns=self.turns_played,
+            turns=self.tricks_played,
             player=unicode(self.active_player)
         )
 
@@ -180,7 +189,7 @@ class Hand:
         if self.trump is None and (self.revealed is None or self.revealed.suit == trump):
             self.trump = trump
             print "Trump suit is now {}".format(trump)
-            self.active_player = self.dealer
+            self.active_player = self.player_to_left(self.dealer)
             return True
         else:
             print "You can not set that as trump!"
@@ -192,6 +201,7 @@ class Hand:
 
         self.cards_played.append(card)
         self.active_player.cards.remove(card)
+        self.active_player = self.player_to_left()
         return True
 
     # def card_ranking(self):
