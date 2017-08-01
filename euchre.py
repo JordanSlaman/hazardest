@@ -19,18 +19,23 @@ class Deck:
         self.cards = [Card(suit, value) for suit, value in itertools.product(suits, values)]
         self.shuffle()
 
-    def __next__(self):
-        return self.cards.pop()
-
     def shuffle(self):
         random.shuffle(self.cards)
 
+    def top_card(self):
+        return self.cards.pop()
+
+    def deal(self, players, qty=5):
+        for i in range(qty):
+            for p in players:
+                p.cards.append(self.top_card())
 
 class Player:
 
+    cards = []
+
     def __init__(self, position):
         self.position = position
-        self.cards = []
 
     def __unicode__(self):
         return self.position
@@ -130,23 +135,19 @@ def Trick():
 
 class Hand:
 
+    deck = Deck()
+    trump = None
+    tricks_played = 0
+    cards_played = []
+
     def __init__(self, players, hands_played):
         self.players, self.hands_played = players, hands_played
         self.dealer = self.players[hands_played % 4]
 
-        self.deck = Deck()
-        next_card = self.deck.__next__
-
-        for i in range(5):
-            for p in players:
-                p.cards.append(next_card())
-
-        self.trump = None
-        self.revealed = next_card()
-
+        self.deck.deal(players)
+        self.revealed = self.deck.top_card()
         self.active_player = self.player_to_left(self.dealer)
-        self.tricks_played = 0
-        self.cards_played = []
+
 
         while not self.is_over():
             self.explain()
@@ -210,20 +211,20 @@ class Hand:
 
 class Team:
 
+    points = 0
+
     def __init__(self, players):
         self.players = players
-        self.points = 0
 
 
 class Game:
+    positions = ['North', 'East', 'South', 'West']
+    players = [Player(pos) for pos in positions]
+    teams = [Team([p for p in players if p.position in positions[::2]]),
+             Team([p for p in players if p.position in positions[1::2]])]
+    hands_played = 0
 
     def __init__(self):
-        self.positions = ['North', 'East', 'South', 'West']
-        self.players = [Player(position) for position in self.positions]
-        self.teams = [Team([p for p in self.players if p.position in self.positions[::2]]),
-                      Team([p for p in self.players if p.position in self.positions[1::2]])]
-        self.hands_played = 0
-
         while not self.is_over():
             self.hand = Hand(self.players, self.hands_played)
             self.hands_played += 1
