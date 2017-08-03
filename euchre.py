@@ -1,5 +1,6 @@
 import itertools, random
 
+PROMPT = '>>> '
 
 class Card:
 
@@ -41,7 +42,7 @@ class Player:
         return self.position
 
     def explain(self):
-        print """
+        print u"""
         Player in the {pos} position, it is your turn.
         You have the following cards: {cards}
         What would you like to do?
@@ -59,7 +60,7 @@ class Turn:
     def __init__(self, hand):
         self.hand = hand
         self.explain()
-        self.interpret(raw_input())
+        self.interpret(raw_input(PROMPT))
 
     def explain(self):
         raise NotImplemented
@@ -71,7 +72,7 @@ class Turn:
 class TrumpTurn(Turn):
 
     def explain(self):
-        print """
+        print u"""
         We are currently determining the trump suit.
         The revealed card is: {revealed}
         """.format(revealed=unicode(self.hand.revealed))
@@ -101,7 +102,7 @@ class TrumpTurn(Turn):
         if not valid_input:
             print "Bad input."
         if not self.complete:
-            self.interpret(raw_input())
+            self.interpret(raw_input(PROMPT))
 
 class TrickTurn(Turn):
 
@@ -124,7 +125,7 @@ class TrickTurn(Turn):
             print "Bad input."
 
         if not self.complete:
-            self.interpret(raw_input())
+            self.interpret(raw_input(PROMPT))
 
 
 def Trick():
@@ -160,9 +161,10 @@ class Hand:
             self.tricks_played += 1
 
     def is_over(self):
-        end_conditions = [bool([p for p in self.players if p.cards_left() == 0]),  # Players have naturally exhausted their cards.
-                          self.active_player is self.player_to_left(self.dealer) and self.tricks_played != 0] # Players could not determine trump.
-
+        end_conditions = [
+            bool([p for p in self.players if p.cards_left() == 0]),                             # Players have naturally exhausted their cards.
+            self.active_player is self.player_to_left(self.dealer) and self.tricks_played != 0  # Players could not determine trump
+        ]
         return any(end_conditions)
 
     def player_to_left(self, player=None):
@@ -172,7 +174,7 @@ class Hand:
         return self.players[(index + 1) % 4]
 
     def explain(self):
-        print """
+        print u"""
         Hand # {hand}
         Turn # {turns}
         Dealer is: {dealer}
@@ -236,4 +238,4 @@ class Game:
         return False
 
 
-game = Game()
+Game()
