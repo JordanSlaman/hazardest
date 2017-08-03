@@ -14,10 +14,11 @@ class Card:
 
 class Deck:
 
+    suits = ['Diamonds', 'Clubs', 'Hearts', 'Spades']
+    values = ['Ace', 'King', 'Queen', 'Jack', 'Ten', 'Nine']
+
     def __init__(self):
-        suits = ['Diamonds', 'Clubs', 'Hearts', 'Spades']
-        values = ['Ace', 'King', 'Queen', 'Jack', 'Ten', 'Nine']
-        self.cards = [Card(suit, value) for suit, value in itertools.product(suits, values)]
+        self.cards = [Card(suit, value) for suit, value in itertools.product(self.suits, self.values)]
         self.shuffle()
 
     def shuffle(self):
@@ -33,9 +34,8 @@ class Deck:
 
 class Player:
 
-    cards = []
-
     def __init__(self, position):
+        self.cards = []
         self.position = position
 
     def __unicode__(self):
@@ -77,7 +77,7 @@ class TrumpTurn(Turn):
         The revealed card is: {revealed}
         """.format(revealed=unicode(self.hand.revealed))
         self.hand.active_player.explain()
-        print """
+        print u"""
         S, C, H, D to choose a suit.
         P to pass."""
 
@@ -136,21 +136,23 @@ def Trick():
 
 class Hand:
 
-    deck = Deck()
-    trump = None
-    tricks_played = 0
-    cards_played = []
 
     def __init__(self, players, hands_played):
         self.players, self.hands_played = players, hands_played
         self.dealer = self.players[hands_played % 4]
 
+        self.deck = Deck()
         self.deck.deal(players)
         self.revealed = self.deck.top_card()
         self.active_player = self.player_to_left(self.dealer)
 
+        self.trump = None
+        self.tricks_played = 0
+        self.cards_played = []
 
         while not self.is_over():
+            # Sort player cards?
+
             self.explain()
             if self.trump is None:
                 TrumpTurn(self)
@@ -207,9 +209,13 @@ class Hand:
         self.active_player = self.player_to_left()
         return True
 
-    # def card_ranking(self):
-    #     if not self.trump:
+    def compare_cards(self, card1, card2):
+
+        if self.trump is None:
             # asking suit?
+            pass
+        else:
+            pass
 
 class Team:
 
