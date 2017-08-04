@@ -1,6 +1,10 @@
 import itertools, random
 
 PROMPT = '>>> '
+SUITS = ['Diamonds', 'Clubs', 'Hearts', 'Spades']
+RED_SUITS = SUITS[::2]
+BLACK_SUITS = SUITS[1::2]
+VALUES = ['Ace', 'King', 'Queen', 'Jack', 'Ten', 'Nine']
 
 class Card:
 
@@ -11,14 +15,31 @@ class Card:
     def __unicode__(self):
         return "{} of {}".format(self.value, self.suit)
 
+    def is_red(self):
+        return self.suit in RED_SUITS
+
+    def is_black(self):
+        return self.suit in BLACK_SUITS
+
+    def is_same_colour(self, card):
+        return (self.is_red() and card.is_red()) or (self.is_black() and card.is_black())
+
+    def is_trump(self, hand):
+        return self.suit == hand.trump or self.is_left_bauer(hand)
+
+    def is_right_bauer(self, hand):
+        return self.value == 'Jack' and self.suit == hand.trump
+
+    def is_left_bauer(self, hand):
+        return all([self.value == 'Jack',
+                    self.suit != hand.trump,
+                    ((self.is_red() and hand.trump in RED_SUITS) or (self.is_black() and hand.trump in BLACK_SUITS))])
+
 
 class Deck:
 
-    suits = ['Diamonds', 'Clubs', 'Hearts', 'Spades']
-    values = ['Ace', 'King', 'Queen', 'Jack', 'Ten', 'Nine']
-
     def __init__(self):
-        self.cards = [Card(suit, value) for suit, value in itertools.product(self.suits, self.values)]
+        self.cards = [Card(suit, value) for suit, value in itertools.product(SUITS, VALUES)]
         self.shuffle()
 
     def shuffle(self):
@@ -107,11 +128,11 @@ class TrumpTurn(Turn):
 class TrickTurn(Turn):
 
     def explain(self):
-        print """
+        print u"""
         The following cards have been played: {history}
         """.format(history=self.hand.cards_played)
         self.hand.active_player.explain()
-        print """
+        print u"""
         0-{n} to play a card.""".format(n=self.hand.active_player.cards_left()-1)
 
     def interpret(self, string):
@@ -193,11 +214,11 @@ class Hand:
     def set_trump(self, trump):
         if self.trump is None and (self.revealed is None or self.revealed.suit == trump):
             self.trump = trump
-            print "Trump suit is now {}".format(trump)
+            print u"Trump suit is now {}".format(trump)
             self.active_player = self.player_to_left(self.dealer)
             return True
         else:
-            print "You can not set that as trump!"
+            print u"You can not set that as trump!"
             return False
 
     def play_card(self, card):
@@ -209,12 +230,20 @@ class Hand:
         self.active_player = self.player_to_left()
         return True
 
-    def compare_cards(self, card1, card2):
+    def get_higher(self, card1, card2):
 
         if self.trump is None:
             # asking suit?
             pass
         else:
+
+            # Check trump
+            if card1.is_trump(self) and not card2.is_trump(self):
+                return card1
+            elif card2.is_trump(self) and not card1.is_trump(self):
+                return card2
+
+            # Highest value
             pass
 
 class Team:
