@@ -35,6 +35,9 @@ class Card:
                     self.suit != hand.trump,
                     ((self.is_red() and hand.trump in RED_SUITS) or (self.is_black() and hand.trump in BLACK_SUITS))])
 
+    @staticmethod
+    def pretty_print(list):
+        return [card for card in enumerate(map(unicode, list))]
 
 class Deck:
 
@@ -69,7 +72,7 @@ class Player:
         What would you like to do?
         """.format(
             pos=self.position,
-            cards=[card for card in enumerate(map(unicode, self.cards))]
+            cards=Card.pretty_print(self.cards)
         )
 
     def cards_left(self):
@@ -130,7 +133,7 @@ class TrickTurn(Turn):
     def explain(self):
         print u"""
         The following cards have been played: {history}
-        """.format(history=self.hand.cards_played)
+        """.format(history=Card.pretty_print(self.hand.current_trick.cards_played))
         self.hand.active_player.explain()
         print u"""
         0-{n} to play a card.""".format(n=self.hand.active_player.cards_left()-1)
@@ -141,7 +144,7 @@ class TrickTurn(Turn):
 
         if int(string) in range(player.cards_left()-1):
             card = player.cards[int(string)]
-            self.complete = self.hand.play_card(card)
+            self.complete = self.hand.current_trick.play_card(card)
         else:
             print "Bad input."
 
@@ -149,10 +152,30 @@ class TrickTurn(Turn):
             self.interpret(raw_input(PROMPT))
 
 
-def Trick():
+class Trick():
 
     def __init__(self, hand):
-        self.turn = TrickTurn(hand)
+        self.cards_played = []
+        self.hand = hand
+        hand.current_trick = self
+
+
+        while not self.is_over():
+            TrickTurn(hand)
+
+        hand.tricks_played += 1
+
+    def is_over(self):
+        return len(self.cards_played) == 4
+
+    def play_card(self, card):
+
+        # logix
+
+        self.cards_played.append(card)
+        self.hand.active_player.cards.remove(card)
+        self.hand.active_player = self.hand.player_to_left()
+        return True
 
 
 class Hand:
@@ -168,6 +191,7 @@ class Hand:
         self.active_player = self.player_to_left(self.dealer)
 
         self.trump = None
+        self.current_trick = None
         self.tricks_played = 0
         self.cards_played = []
 
@@ -177,11 +201,8 @@ class Hand:
             self.explain()
             if self.trump is None:
                 TrumpTurn(self)
-
-            self.trick = Trick()
-            self.turn = TrickTurn(self)
-
-            self.tricks_played += 1
+            else:
+                Trick(self)
 
     def is_over(self):
         end_conditions = [
@@ -220,15 +241,6 @@ class Hand:
         else:
             print u"You can not set that as trump!"
             return False
-
-    def play_card(self, card):
-
-        # logix
-
-        self.cards_played.append(card)
-        self.active_player.cards.remove(card)
-        self.active_player = self.player_to_left()
-        return True
 
     def get_higher(self, card1, card2):
 
