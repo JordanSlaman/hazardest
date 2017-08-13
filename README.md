@@ -20,3 +20,6 @@ Maybe in the far future we'll get some AI involved to analyze games and play aga
 #### Infrastructure
 - Docker/Vagrant/K8s?
 - AWS
+
+
+https://github.com/pakastin/deck-of-cards
