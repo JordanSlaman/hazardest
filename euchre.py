@@ -276,8 +276,11 @@ class Trick():
         while not self.is_over():
             TrickTurn(hand)
 
-
-        x = 3
+        from operator import itemgetter
+        from copy import copy
+        sorted_cards = copy(self.cards_played)
+        sorted_cards.sort(cmp=hand.num_compare_cards, key=itemgetter(0))
+        print u"Hand goes to {}".format(sorted_cards[0][1].position)
 
     def is_over(self):
         return len(self.cards_played) == 4
@@ -299,7 +302,7 @@ class Trick():
             self.hand.active_player = self.hand.player_to_left()
         else:
             active_player.cards.append(card)
-            active_player.sort_cards()
+            active_player.sort_cards(self.hand)
             self.play_card()
 
     def get_cards_played(self):
