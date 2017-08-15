@@ -1,0 +1,68 @@
+<html>
+
+<head>
+    <title>Hazardest</title>
+
+    <!-- meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta name="description" content="Play Free Online Euchre">
+    <meta name="author" content="Jordan Slaman">
+
+
+
+    <!-- vue -->
+    <script src="https://unpkg.com/vue"></script>
+    <!-- bootstrap css -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+
+    <!-- deck of cards js -->
+    <script src="https://deck-of-cards.js.org/dist/deck.min.js"></script>
+    <link rel="stylesheet" href="cards.css">
+
+    <!-- custom css -->
+    <link rel="stylesheet" href="style.css">
+
+
+
+</head>
+
+<!-- google analytics goes here -->
+
+<body>
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- sidebar -->
+            <div class="col-3">
+                <div id="sidebar"></div>
+            </div>
+            <!-- main -->
+            <div class="col-9">
+                <div id="table"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+    <!-- custom js -->
+    <script src="app.js"></script>
+
+    <!-- cards -->
+    <script language="JavaScript">
+        var $table = document.getElementById('table')
+
+    // create Deck
+    var deck = Deck()
+
+    // add to DOM
+    deck.mount($table)
+
+    deck.shuffle();
+    deck.flip();
+    deck.fan();
+    </script>
+</html>
+
