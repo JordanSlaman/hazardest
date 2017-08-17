@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+
+        <!-- deck of cards js -->
+        <script src="deck.js"></script>
+        <link rel="stylesheet" href="cards.css">
+    </head>
+
+
+    <body id="table">
+
+    </body>
+
+        <!-- cards -->
+    <script language="JavaScript">
+        var $table = document.getElementById('table')
+
+        // create Deck
+        var deck = Deck()
+
+        // add to DOM
+        deck.mount($table)
+
+        deck.cards.forEach(function (card) {
+            if (card.rank < 9) {
+                card.unmount();
+            };
+            card.enableDragging();
+        });
+
+        deck.flip();
+        deck.fan();
+
+    </script>
+
+
+</html>
