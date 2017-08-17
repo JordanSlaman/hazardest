@@ -25,9 +25,6 @@
         deck.mount($table)
 
         deck.cards.forEach(function (card) {
-            if (card.rank < 9) {
-                card.unmount();
-            };
             card.enableDragging();
         });
 
