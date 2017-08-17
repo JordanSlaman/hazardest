@@ -17,10 +17,6 @@
     <!-- bootstrap css -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 
-    <!-- deck of cards js -->
-    <script src="https://deck-of-cards.js.org/dist/deck.min.js"></script>
-    <link rel="stylesheet" href="cards.css">
-
     <!-- custom css -->
     <link rel="stylesheet" href="style.css">
 
@@ -41,7 +37,7 @@
             </div>
             <!-- main -->
             <div class="col-9">
-                <div id="table"></div>
+                <iframe src="table.html" style="width: 100%; height: 100%;"></iframe>
             </div>
         </div>
     </div>
@@ -50,19 +46,5 @@
     <!-- custom js -->
     <script src="app.js"></script>
 
-    <!-- cards -->
-    <script language="JavaScript">
-        var $table = document.getElementById('table')
-
-    // create Deck
-    var deck = Deck()
-
-    // add to DOM
-    deck.mount($table)
-
-    deck.shuffle();
-    deck.flip();
-    deck.fan();
-    </script>
 </html>
 
