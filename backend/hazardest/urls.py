@@ -16,14 +16,23 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 from rest_framework import routers
 
+from views import index, play
 
 router = routers.DefaultRouter()
 # router.register(r'users', UserViewSet)
 
 urlpatterns = [
+    url(r'^$', index, name='root'),
+    url(r'^play/', play, name='play'),
+
     url(r'^', include(router.urls)),
     url(r'^admin/', admin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+# todo remove static routes/imports when pushing live
