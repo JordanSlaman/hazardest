@@ -13,9 +13,17 @@
 
 
     <!--vue-->
-    <script src="https://unpkg.com/vue"></script>
-     <!--bootstrap css-->
+    <!--<script src="https://unpkg.com/vue"></script>-->
+
+    <!--jquery-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <!--reconnecting websocket-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
+
+    <!--bootstrap css-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+
 
     <!--custom css-->
     <link rel="stylesheet" href="style.css">
@@ -111,6 +119,27 @@
 </body>
     <!--custom js-->
     <script src="app.js"></script>
+
+    <script>
+        $(function () {
+            // Correctly decide between ws:// and wss://
+            var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+            // var ws_path = ws_scheme + '://' + window.location.host + "/chat/stream/";
+            var ws_path = ws_scheme + '://localhost:8000' + "/chat/stream/";
+
+            console.log("Connecting to " + ws_path);
+            var socket = new ReconnectingWebSocket(ws_path);
+
+            // Helpful debugging
+            socket.onopen = function () {
+                console.log("Connected to chat socket");
+            };
+            socket.onclose = function () {
+                console.log("Disconnected from chat socket");
+            }
+        });
+
+    </script>
 
 </html>
 

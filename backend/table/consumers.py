@@ -1,9 +1,12 @@
 import json
 
-from channels import Cha
-from channels.auth import channel_session_user_from_http
+from channels import Channel
+from channels.auth import channel_session_user_from_http, channel_session_user
 
 from .models import Table
+from .utils import get_table_or_error, catch_client_error
+from .exceptions import ClientError
+
 
 @channel_session_user_from_http
 def ws_connect(message):

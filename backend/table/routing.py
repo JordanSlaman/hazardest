@@ -1,6 +1,6 @@
 from channels import route
 
-import .consumers as TableConsumers
+import consumers as TableConsumers
 
 
 
