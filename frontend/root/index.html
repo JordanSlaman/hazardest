@@ -58,26 +58,27 @@
 
 <div class="container">
     <div class="row call-to-action">
-        <div class="col text-center">
-            <h1>Online Euchre</h1>
-            <h2>12 Tables</h2>
-            <h2>62 Online</h2>
-            <button type="submit" class="btn-lg btn-outline-primary">Play Now!</button>
+        <div class="col-8 text-center">
+                <h1>Online Euchre</h1>
+                <h2>12 Tables</h2>
+                <h2>62 Online</h2>
+                <button type="submit" class="btn-lg btn-outline-primary">Play Now!</button>
         </div>
 
 
-        <div class="col">
+        <div class="col-4">
             <form>
                 <div class="form-group">
-                    <label for="exampleInputEmail1">Username</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Username">
+                    <label for="username_input">Username</label>
+                    <input type="text" class="form-control" id="username_input" aria-describedby="emailHelp" placeholder="Username">
                     <!--<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>-->
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Password</label>
                     <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
                 </div>
-                <button type="submit" class="btn btn-primary" v-on:click="register">Register</button>
+                <button type="submit" id="btn-register" class="btn btn-primary float-right" v-on:click="register">Register</button>
+                <button type="submit" id="btn-login" class="btn btn-secondary float-right" v-on:click="login">Login</button>
             </form>
         </div>
     </div>
