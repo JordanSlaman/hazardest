@@ -6,15 +6,14 @@ Maybe in the far future we'll get some AI involved to analyze games and play aga
 ## Technologies
 
 #### Frontend
-- Vue.js?
-- HTML Canvas
+- Vue.js
 - Bootstrap
 
 
 #### Python Backend
 - Django
 - Django REST Framework
-- Django Channels ?
+- Django Channels
 
 
 #### Infrastructure

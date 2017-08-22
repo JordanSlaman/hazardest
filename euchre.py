@@ -31,10 +31,16 @@ class Card:
     def is_right_bauer(self, hand):
         return self.value == 'Jack' and self.suit == hand.trump
 
+    def trump_is_red(self, hand):
+        return hand.trump in RED_SUITS
+
+    def trump_is_black(self, hand):
+        return hand.trump in BLACK_SUITS
+
     def is_left_bauer(self, hand):
         return all([self.value == 'Jack',
                     self.suit != hand.trump,
-                    ((self.is_red() and hand.trump in RED_SUITS) or (self.is_black() and hand.trump in BLACK_SUITS))])
+                    ((self.is_red() and self.trump_is_red(hand)) or (self.is_black() and self.trump_is_black(hand)))])
 
     @staticmethod
     def pretty_print(list):
