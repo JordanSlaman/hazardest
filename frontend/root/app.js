@@ -1,19 +1,20 @@
 var app = new Vue({
-  el: '#app',
-  data: {
-    session: {
-        username: ''
-    }
-  },
+    el: '#app',
+    data: {
+        session: {
+            username: 'bob'
+        },
+        qty_tables: 23
+    },
 
-  methods: {
-    session: function (event) {
-                axios.get('/session')
+    methods: {
+        _session: function (event) {
+            axios.get('http://localhost:8080/session')
                 .then(function (response) {
                     console.log(response);
                 })
 
-             },
+        },
 
 
 //    register: function (event) {

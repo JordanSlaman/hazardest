@@ -4,6 +4,10 @@ body {
     background: linear-gradient(135deg, #5C258D, #4389A2); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
+.navbar {
+    background-color: #222;
+}
+
 
 .call-to-action {
     padding-top: 300px;
@@ -11,6 +15,9 @@ body {
 
 #btn-register {
     margin-left: 15px;
+}
+
+#about {
 }
 
 footer {
