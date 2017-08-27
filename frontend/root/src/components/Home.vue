@@ -1,29 +1,6 @@
 <template>
   <div class="container">
-    <nav class="navbar fixed-top navbar-light bg-faded">
-      <a class="navbar-brand" style="color: #aaa" href="#">
-        <img src="../assets/hazardest.png" width="38" height="29" class="d-inline-block align-top" alt="">
-        hazardest
-      </a>
-
-      <ul class="nav justify-content-end">
-        <!--<li class="nav-item">-->
-        <!--<a class="nav-link active" href="#">Active</a>-->
-        <!--</li>-->
-        <li class="nav-item">
-          <a class="nav-link" href="#about">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="https://reddit.com/r/hazardest/">Community</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">{{session.username}}</a>
-        </li>
-
-
-      </ul>
-
-    </nav>
+    <hazardest-nav></hazardest-nav>
 
   <!-- Content here -->
     <div class="row call-to-action">
@@ -57,10 +34,18 @@
         <h4>Hazardest is a free online multiplayer Euchre card game.</h4>
       </div>
     </div>
+
+    <hazardest-footer></hazardest-footer>
+
+
   </div>
+
 </template>
 
 <script>
+  import HazardestNav from './HazardestNav';
+  import HazardestFooter from './HazardestFooter';
+
   export default {
     name: 'index',
     data() {
@@ -71,16 +56,14 @@
         qty_tables: 23,
       };
     },
+    components: {
+      HazardestNav,
+      HazardestFooter,
+    },
   };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-.navbar {
-    background-color: #222;
-}
-
+<style >
 
 .call-to-action {
     padding-top: 300px;
@@ -91,10 +74,5 @@
 }
 
 #about {
-}
-
-footer {
-    background: white;
-    padding-top: 50px;
 }
 </style>
