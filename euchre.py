@@ -1,4 +1,5 @@
-import itertools, random
+import itertools
+import random
 
 PROMPT = '>>> '
 SUITS = ['Diamonds', 'Clubs', 'Hearts', 'Spades']
@@ -13,7 +14,7 @@ class Card:
         self.suit = suit
         self.value = value
 
-    def __unicode__(self):
+    def __repr__(self):
         return "{} of {}".format(self.value, self.suit)
 
     def is_red(self):
@@ -44,7 +45,7 @@ class Card:
 
     @staticmethod
     def pretty_print(list):
-        return [card for card in enumerate(map(unicode, list))]
+        return [card for card in enumerate(list)]
 
 
 class Deck:
@@ -71,18 +72,15 @@ class Player:
         self.cards = []
         self.position = position
 
-    def __unicode__(self):
+    def __repr__(self):
         return self.position
 
     def explain(self):
-        print u"""
-        Player in the {pos} position, it is your turn.
-        You have the following cards: {cards}
+        print(f"""
+        Player in the {self.position} position, it is your turn.
+        You have the following cards: {Card.pretty_print(self.cards)}
         What would you like to do?
-        """.format(
-            pos=self.position,
-            cards=Card.pretty_print(self.cards)
-        )
+        """)
 
     def cards_left(self):
         return len(self.cards)
@@ -91,24 +89,21 @@ class Player:
         return suit in {c.suit for c in self.cards}
 
     def order_up(self, hand):
-        print u"""
-        Player in the {pos} position, you have been ordered up.
-        You will be receiving: {revealed}
-        Your cards are: {cards}
+        print(f"""
+        Player in the {self.position} position, you have been ordered up.
+        You will be receiving: {hand.revealed}
+        Your cards are: {Card.pretty_print(self.cards)}
         Which card would you like to remove?
-        """.format(pos=self.position,
-                   revealed=unicode(hand.revealed),
-                   cards=Card.pretty_print(self.cards))
-        self.play_card() # Throws away
+        """)
+        self.play_card()  # Throws away
         self.cards.append(hand.revealed)
         self.sort_cards(hand)
         hand.revealed = None
 
-        print u"""
-        Player in the {pos} position, your new hand is: {cards}
+        print(f"""
+        Player in the {self.position} position, your new hand is: {Card.pretty_print(self.cards)}
 
-        """.format(pos=self.position,
-                   cards=Card.pretty_print(self.cards))
+        """)
 
     def sort_cards(self, hand):
 
@@ -129,10 +124,10 @@ class Player:
             if card.suit == 'Spades':
                 s.append(card) if not card.is_left_bauer(hand) else c.append(card)
 
-        d.sort(cmp=hand.num_compare_cards)
-        c.sort(cmp=hand.num_compare_cards)
-        h.sort(cmp=hand.num_compare_cards)
-        s.sort(cmp=hand.num_compare_cards)
+        d.sort(key=hand.card_value)
+        c.sort(key=hand.card_value)
+        h.sort(key=hand.card_value)
+        s.sort(key=hand.card_value)
 
         if hand.trump is None or hand.trump == 'Diamonds':
             self.cards = d + c + h + s
@@ -150,22 +145,22 @@ class Player:
         """
 
         if self.cards_left() > 1:
-            print u"0-{n} to play a card.".format(n=self.cards_left()-1)
-            string = raw_input(PROMPT)
+            print(f"0-{self.cards_left() - 1} to play a card.")
+            string = input(PROMPT)
 
             try:
                 index = int(string)
             except ValueError:
-                print u"That's not a number."
+                print(u"That's not a number.")
                 return self.play_card()
             else:
                 if index not in range(self.cards_left()):
-                    print u"You don't have a card in position {}".format(index)
+                    print(f"You don't have a card in position {index}")
                     return self.play_card()
                 else:
                     return self.cards.pop(index)
         else:
-            print u"Playing last card."
+            print("Playing last card.")
             return self.cards.pop()
 
 
@@ -174,7 +169,7 @@ class Turn:
     def __init__(self, hand):
         self.hand = hand
         self.explain()
-        self.interpret(raw_input(PROMPT))
+        self.interpret(input(PROMPT))
 
     def explain(self):
         raise NotImplemented
@@ -190,19 +185,19 @@ class TrumpTurn(Turn):
 
     def explain(self):
         revealed = self.hand.revealed
-        print u"""
+        print(f"""
         We are currently determining the trump suit.
         The revealed card is: {revealed}
-        """.format(revealed=unicode(revealed))
+        """)
         self.hand.active_player.explain()
 
         if self.is_first_round():
             if self.hand.active_player is self.hand.dealer:
-                print u"T to take {trump} as trump. \nP to pass.".format(trump=revealed.suit)
+                print(f"T to take {revealed.suit} as trump. \nP to pass.")
             else:
-                print u"O to order up {trump} as trump. \nP to pass.".format(trump=revealed.suit)
+                print(f"O to order up {revealed.suit} as trump. \nP to pass.")
         else:
-            print u"""S, C, H, D to choose a suit. \nP to pass."""
+            print("""S, C, H, D to choose a suit. \nP to pass.""")
 
     def interpret(self, string):
         self.complete = False
@@ -215,14 +210,14 @@ class TrumpTurn(Turn):
 
         revealed_suit = self.hand.revealed.suit
 
-        if string in u'pP':
+        if string in 'pP':
             valid_input = True
-            print u"{player} passes".format(player=unicode(self.hand.active_player))
+            print(f"{self.hand.active_player} passes")
             self.hand.active_player = self.hand.player_to_left()
             self.complete = True
         else:
             if self.is_first_round():
-                if string in u'oOtT':
+                if string in 'oOtT':
                     valid_input = True
                     self.hand.set_trump(revealed_suit)
                     self.complete = True
@@ -235,58 +230,52 @@ class TrumpTurn(Turn):
                             self.hand.set_trump(chosen_suit)
                             self.complete = True
                         else:
-                            print u"You already passed on that suit."
+                            print("You already passed on that suit.")
                         break
 
         if not valid_input:
-            print u"Bad input: {}".format(string)
+            print(f"Bad input: {string}")
         if not self.complete:
-            self.interpret(raw_input(PROMPT))
+            self.interpret(input(PROMPT))
 
 
-class TrickTurn():
-
+class TrickTurn:
 
     def __init__(self, hand):
         self.hand = hand
         self.explain()
         self.hand.current_trick.play_card()
 
-
     def explain(self):
         cards_played = self.hand.current_trick.cards_played
         trump = self.hand.trump
 
         if len(cards_played) == 0:
-            print u"""
+            print(f"""
             No cards have been played.
-            {trump} is trump.""".format(trump=trump)
+            {trump} is trump.""")
         else:
-            print u"""
-            The following cards have been played: {history}
-            {trump} is trump, {lead} was lead.
-            """.format(history=self.hand.current_trick.get_cards_played(),
-                       trump=trump,
-                       lead=cards_played[0][0].suit)
+            print(f"""
+            The following cards have been played: {self.hand.current_trick.get_cards_played()}
+            {trump} is trump, {cards_played[0][0].suit} was lead.
+            """)
         self.hand.active_player.explain()
 
 
-class Trick():
+class Trick:
 
     def __init__(self, hand):
         self.cards_played = []
         self.hand = hand
         hand.current_trick = self
 
-
         while not self.is_over():
             TrickTurn(hand)
 
-        from operator import itemgetter
         from copy import copy
         sorted_cards = copy(self.cards_played)
-        sorted_cards.sort(cmp=hand.num_compare_cards, key=itemgetter(0))
-        print u"Hand goes to {}".format(sorted_cards[0][1].position)
+        sorted_cards.sort(key=hand.card_value)
+        print(f"Hand goes to {sorted_cards[0][1].position}")
 
     def is_over(self):
         return len(self.cards_played) == 4
@@ -299,9 +288,13 @@ class Trick():
 
         if len(self.cards_played) > 0:
             asking_suit = self.cards_played[0][0].suit
-            if card.suit is not asking_suit and active_player.has_suit(asking_suit):
-                print u"Must follow suit!"
-                is_valid = False
+            player_has_suit = active_player.has_suit(asking_suit)
+            playing_left_as_trump = asking_suit == self.hand.trump and card.is_left_bauer(self)
+
+            if card.suit is not asking_suit:
+                if not playing_left_as_trump or player_has_suit:
+                    print("Must follow suit!")
+                    is_valid = False
 
         if is_valid:
             self.cards_played.append((card, active_player))
@@ -312,13 +305,13 @@ class Trick():
             self.play_card()
 
     def get_cards_played(self):
-        return [(unicode(c), p.position) for c, p in self.cards_played]
+        return [(c, p.position) for c, p in self.cards_played]
 
 
 class Hand:
 
     def __init__(self, game, players, num_hands_played):
-        print u"Dealing new hand."
+        print(u"Dealing new hand.")
 
         self.game = game
         self.players, self.num_hands_played = players, num_hands_played
@@ -348,8 +341,8 @@ class Hand:
 
     def is_over(self):
         end_conditions = [
-            bool([p for p in self.players if p.cards_left() == 0]), # Players have naturally exhausted their cards.
-            self.num_trump_turns() == 8                             # Players could not determine trump
+            bool([p for p in self.players if p.cards_left() == 0]),  # Players have naturally exhausted their cards.
+            self.num_trump_turns() == 8  # Players could not determine trump
         ]
         return any(end_conditions)
 
@@ -366,53 +359,34 @@ class Hand:
         return self.players[(index + 1) % 4]
 
     def explain(self):
-        print u"""
-        Hand # {hand}
-        Trick # {tricks}
-        Dealer is: {dealer}
-        Trump is: {trump}
-        Player is: {player}
-        """.format(
-            hand=self.num_hands_played,
-            dealer=unicode(self.dealer),
-            trump=self.trump,
-            tricks=self.num_tricks_played(),
-            player=unicode(self.active_player)
-        )
+        print(f"""
+        Hand # {self.num_hands_played}
+        Trick # {self.num_tricks_played()}
+        Dealer is: {self.dealer}
+        Trump is: {self.trump}
+        Player is: {self.active_player}
+        """)
 
     def set_trump(self, trump):
         self.trump = trump
         self.sort_player_cards()
         if self.num_trump_turns() < 4:
             self.dealer.order_up(self)
-        print u"Trump suit is now {}".format(self.trump)
+        print(f"Trump suit is now {self.trump}")
         self.active_player = self.player_to_left(self.dealer)
 
-    def num_compare_cards(self, card1, card2):
-        card1_greater = -1
-        cards_equal = 0
-        card2_greater = 1
+    def card_value(self, card):
+        value = VALUES.index(card.value)
 
         if self.trump is not None:
-            # If only one is trump, it wins.
-            if card1.is_trump(self) and not card2.is_trump(self):
-                return card1_greater
-            elif card2.is_trump(self) and not card1.is_trump(self):
-                return card2_greater
+            if card.is_trump(self):
+                value += 10
+            if card.is_right_bauer(self):
+                value += 10
+            if card.is_left_bauer(self):
+                value += 5
 
-            # Bauers win.
-            if card1.is_right_bauer(self):
-                return card1_greater
-            if card2.is_right_bauer(self):
-                return card2_greater
-            if card1.is_left_bauer(self):
-                return card1_greater
-            if card2.is_left_bauer(self):
-                return card2_greater
-
-        # Highest card wins.
-        return VALUES.index(card1.value) - VALUES.index(card2.value)
-
+        return value
 
     def sort_player_cards(self):
         for p in self.players:
@@ -421,24 +395,24 @@ class Hand:
 
 class Team:
 
-    points = 0
-
     def __init__(self, players):
         self.players = players
+        self.points = 0
 
 
 class Game:
 
-    positions = ['North', 'East', 'South', 'West']
-    players = [Player(pos) for pos in positions]
-    teams = [Team([p for p in players if p.position in positions[::2]]),
-             Team([p for p in players if p.position in positions[1::2]])]
-    hands_played = []
-
     def __init__(self):
+        self.positions = ['North', 'East', 'South', 'West']
+        self.players = [Player(pos) for pos in self.positions]
+        self.teams = [
+            Team([p for p in self.players if p.position in self.positions[::2]]),
+            Team([p for p in self.players if p.position in self.positions[1::2]])
+        ]
+        self.hands_played = []
+
         while not self.is_over():
             self.hands_played.append(Hand(self, self.players, len(self.hands_played)))
-
 
     def is_over(self):
         for t in self.teams:
@@ -446,4 +420,6 @@ class Game:
                 return True
         return False
 
-Game()
+
+if __name__ == '__main__':
+    Game()
