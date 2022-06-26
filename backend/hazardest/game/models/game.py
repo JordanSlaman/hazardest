@@ -42,9 +42,13 @@ class Game(models.Model):
     # team_two_player_east = models.OneToOneField(Player, on_delete=models.CASCADE)
     # team_two_player_west = models.OneToOneField(Player, on_delete=models.CASCADE)
 
-    # Tricks
-    tricks_played = models.PositiveSmallIntegerField(default=0)
+    # Hands
+    hands_played = models.PositiveSmallIntegerField(default=0)
     dealer = models.OneToOneField(Player, related_name='Dealer', null=True, on_delete=models.CASCADE)
+
+    # Log
+    # def add_log(self, log_text):
+    #     self.log_entry_set
 
     # Players
     # Magic methods that confirm & validate via reverse lookups?

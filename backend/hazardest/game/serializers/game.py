@@ -2,9 +2,17 @@ from rest_framework import serializers
 
 from ..models.game import Game
 from .player import PlayerSerializer
+from .game_log import GameLogSerializer
 
 
 class GameSerializer(serializers.HyperlinkedModelSerializer):
+
+    game_log = GameLogSerializer(source='logentry_set',
+                                 many=True,
+                                 read_only=True,
+                                 required=False,
+                                 default=GameLogSerializer())
+
     players = PlayerSerializer(source='player_set',
                                many=True,
                                read_only=True,
@@ -18,7 +26,7 @@ class GameSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Game
         fields = '__all__'
-        read_only_fields = ['players', 'team_one_points', 'team_two_points', 'tricks_played', 'game_state', 'dealer']
+        read_only_fields = ['players', 'team_one_points', 'team_two_points', 'hands_played', 'game_state', 'dealer']
         # fields = ['players']
         validators = [
             # UniqueTogetherValidator(
@@ -34,7 +42,7 @@ class GameSerializer(serializers.HyperlinkedModelSerializer):
         data['team_one_points'] = 0
         data['team_two_points'] = 0
 
-        data['tricks_played'] = 0
+        data['hands_played'] = 0
         data['game_state'] = 'WT'
         data['dealer'] = None
 

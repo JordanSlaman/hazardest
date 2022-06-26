@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+
+    <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+<body>
+
+<noscript>
+    <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
+        Please enable it to continue.</strong>
+</noscript>
+
+
+<div id="app">
+    <div>
+        <b-button size="sm" @click="toggle">
+            {{ show ? 'Hide' : 'Show' }} Alert
+        </b-button>
+        <b-alert
+                v-model="show"
+                class="mt-3"
+                dismissible
+                @dismissed="dismissed"
+        >
+            Hello {{ name }}!
+        </b-alert>
+    </div>
+</div>
+
+<script type="module">
+import Vue from 'vue'
+
+window.onload = () => {
+  new Vue({
+    el: '#app',
+    data() {
+      return {
+        name: 'BootstrapVue',
+        show: true
+      }
+    },
+    watch: {
+      show(newVal) {
+        console.log('Alert is now ' + (newVal ? 'visible' : 'hidden'))
+      }
+    },
+    methods: {
+      toggle() {
+        console.log('Toggle button clicked')
+        this.show = !this.show
+      },
+      dismissed() {
+        console.log('Alert dismissed')
+      }
+    }
+  })
+}
+</script>
+
+
+<style>
+    body { padding: 1rem; }
+</style>
+<!-- built files will be auto injected -->
+</body>
+</html>

@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from rest_framework import status, viewsets
 from rest_framework import permissions
 from rest_framework.decorators import action
@@ -15,11 +17,22 @@ class GameViewSet(viewsets.ModelViewSet):
     serializer_class = GameSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    # List Games
+    # def list(self, request):
+    #     serializer = GameSerializer(self.queryset, many=True)
+    #     return Response(serializer.data)
+
+    # Retrieve Game
+    def retrieve(self, request, pk=None):
+        game = get_object_or_404(self.queryset, pk=pk)
+        serializer = GameSerializer(game, context={'request': request})
+        return Response(serializer.data)
+
     # Create Game
 
-    # Add Player
+    # Join Game
     @action(detail=True, methods=['post'])
-    def add_player(self, request, pk=None):
+    def join(self, request, pk=None):
         user = self.get_object()
         serializer = GameSerializer(data=request.data)
         # if serializer.is_valid():
@@ -33,8 +46,14 @@ class GameViewSet(viewsets.ModelViewSet):
     # Start Game
     @action(detail=True, methods=['post'])
     def start_game(self, request, pk=None):
-        pass
-        # Validate 4 players joined
-        # update game state
+        game = get_object_or_404(self.queryset, pk=pk)
+        if not game.game_full():
+            return Response({"error": "Game does not have 4 players!"},
+                            status=status.HTTP_400_BAD_REQUEST)
+        game.game_state = 'IP'
+
         # deal players hands?
-        # randomly assign dealer
+        # randomly assign dealer?
+
+        game.save()
+        return Response({'status': 'Game in progress'})

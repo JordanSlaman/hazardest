@@ -15,7 +15,7 @@ class PlayerSerializer(serializers.HyperlinkedModelSerializer):
             UniqueTogetherValidator(
                 queryset=Player.objects.all(),
                 fields=['user', 'game'],
-                message="A user cannot be in the same game more than once."
+                message="A user cannot be in a game more than once."
             ),
             UniqueTogetherValidator(
                 queryset=Player.objects.all(),
