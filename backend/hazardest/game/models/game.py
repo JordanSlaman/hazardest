@@ -44,7 +44,6 @@ class Game(models.Model):
 
     # Hands
     hands_played = models.PositiveSmallIntegerField(default=0)
-    dealer = models.OneToOneField(Player, related_name='Dealer', null=True, on_delete=models.CASCADE)
 
     # Log
     # def add_log(self, log_text):

@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from .card import Card
+
 
 class Player(models.Model):
 
@@ -30,6 +32,10 @@ class Player(models.Model):
     team = models.PositiveSmallIntegerField(choices=Team.choices)
     position = models.PositiveSmallIntegerField(choices=Position.choices)
 
+    cards = models.ManyToManyField(Card)
+
+    # def cards(self):
+    #     return self.cards.all()
 
     # def __init__(self, position):
     #     self.cards = []

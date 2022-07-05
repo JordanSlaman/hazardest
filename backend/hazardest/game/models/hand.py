@@ -1,6 +1,9 @@
+import random
+
 from django.db import models
 #
 from .player import Player
+from .card import Card
 
 
 class Hand(models.Model):
@@ -9,7 +12,19 @@ class Hand(models.Model):
         return f'Hand {self.pk}'
 
     game = models.ForeignKey('Game', on_delete=models.RESTRICT)
-    # dealer = models.OneToOneField(Player, related_name='Dealer', null=True, on_delete=models.CASCADE)
+    dealer = models.OneToOneField(Player, related_name='Dealer', null=True, on_delete=models.CASCADE)
+
+    def deal(self):
+        cards = list(Card.objects.all())
+        random.shuffle(cards)
+
+        for p in self.game.player_set.all():
+            for i in range(5):
+                p.cards.add(cards.pop())
+
+        revealed_card = cards.pop()
+        # kitty = cards
+
 
     # def __init__(self, game, players, num_hands_played):
     #     print(u"Dealing new hand.")
