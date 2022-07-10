@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from .player import Player
+from .hand import Hand
+from .log_entry import LogEntry
 
 
 class Game(models.Model):
@@ -32,31 +33,41 @@ class Game(models.Model):
         default='WT',
     )
 
+    # Options?
+    # turn limit timer
+    # select dealer?
+
+
     # Teams
     team_one_points = models.PositiveSmallIntegerField(default=0)
     team_two_points = models.PositiveSmallIntegerField(default=0)
 
-    # team_one_player_north = models.OneToOneField(Player, on_delete=models.CASCADE)
-    # team_one_player_south = models.OneToOneField(Player, on_delete=models.CASCADE)
-    #
-    # team_two_player_east = models.OneToOneField(Player, on_delete=models.CASCADE)
-    # team_two_player_west = models.OneToOneField(Player, on_delete=models.CASCADE)
-
     # Hands
     hands_played = models.PositiveSmallIntegerField(default=0)
+    active_hand = models.ForeignKey(Hand, null=True, related_name='active_hand', on_delete=models.CASCADE)
 
-    # Log
-    # def add_log(self, log_text):
-    #     self.log_entry_set
+    def log(self, log_text):
+        LogEntry.objects.create(game=self, log_text=log_text)
 
     # Players
     # Magic methods that confirm & validate via reverse lookups?
     def game_full(self):
         return self.player_set.count() == 4
 
-    # def players_full(self):
-    #     return self.players
-    # Entry.objects.filter(headline__contains='Lennon').count() == 4
+    def start_game(self):
+        # assert player preconditions?
+
+        dealer = self.player_set.get(user=self.creator)
+        self.active_hand = Hand(game=self, dealer=dealer)
+        self.game_state = self.IN_PROGRESS
+        self.log('Starting new game...')
+        self.save()
+
+    def deal_next_hand(self):
+        current_dealer = self.active_hand.dealer
+        next_dealer = current_dealer.player_to_the_left()
+        self.hands_played += 1
+        self.active_hand = Hand(game=self, dealer=next_dealer)
 
     # def __init__(self):
     #     self.positions = ['North', 'East', 'South', 'West']

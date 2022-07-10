@@ -7,7 +7,7 @@ from .card import Card
 class Player(models.Model):
 
     def __str__(self):
-        return f'Player {self.pk} - {self.user} - {self.game}|{self.position}'
+        return f'Player {self.user} | {self.game}'
 
     class Team(models.IntegerChoices):
         ONE = 1
@@ -27,12 +27,25 @@ class Player(models.Model):
             }
             return position in valid_team_positions[team]
 
+        @staticmethod
+        def left_of(position):
+            return {
+                1: 2,
+                2: 3,
+                3: 4,
+                4: 1
+            }[position]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     game = models.ForeignKey('Game', on_delete=models.RESTRICT)
     team = models.PositiveSmallIntegerField(choices=Team.choices)
     position = models.PositiveSmallIntegerField(choices=Position.choices)
 
     cards = models.ManyToManyField(Card)
+
+    def player_to_the_left(self):
+        pos_index = self.Position.left_of(self.position)
+        return self.game.player_set.get(position=pos_index)
 
     # def cards(self):
     #     return self.cards.all()

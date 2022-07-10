@@ -12,7 +12,11 @@ class Hand(models.Model):
         return f'Hand {self.pk}'
 
     game = models.ForeignKey('Game', on_delete=models.RESTRICT)
+
     dealer = models.OneToOneField(Player, related_name='Dealer', null=True, on_delete=models.CASCADE)
+    active_player = models.OneToOneField(Player, related_name='ActivePlayer', null=True, on_delete=models.CASCADE)
+
+    revealed_card = models.ForeignKey(Card, null=True, on_delete=models.PROTECT)
 
     def deal(self):
         cards = list(Card.objects.all())
@@ -22,9 +26,11 @@ class Hand(models.Model):
             for i in range(5):
                 p.cards.add(cards.pop())
 
-        revealed_card = cards.pop()
-        # kitty = cards
+        self.game.log(f'Dealer {self.dealer} has dealt a new hand.')
+        self.active_player = Player.player_to_the_left(self.dealer)
 
+        self.revealed_card = cards.pop()
+        # kitty = cards
 
     # def __init__(self, game, players, num_hands_played):
     #     print(u"Dealing new hand.")
