@@ -11,13 +11,11 @@ from .fixtures import create_game_with_players
 class HandModelTests(TestCase):
     def setUp(self):
         create_cards()
-        create_game_with_players()
+        self.test_game = create_game_with_players()
 
     def test_deals_5_cards(self):
-        game = Game.objects.get(pk=1)
+        test_dealer = self.test_game.player_set.get(user__username='alice')
+        new_hand = Hand(game=self.test_game, dealer=test_dealer)
 
-        a = game.player_set.get(user__username='alice')
-        new_hand = Hand(game=game, dealer=a)
-        new_hand.deal()
-
-        self.assertIs(a.cards.count(), 5)
+        for player in self.test_game.player_set.all():
+            self.assertIs(player.cards.count(), 5)

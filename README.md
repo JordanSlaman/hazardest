@@ -5,6 +5,7 @@ I attempt to build a fully functional online multiplayer web game, touching all 
 ## Technologies
 
 #### Frontend
+- Vue.js
 - Bootstrap
 
 

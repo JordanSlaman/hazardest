@@ -43,7 +43,7 @@ class PlayerSerializer(serializers.HyperlinkedModelSerializer):
             raise serializers.ValidationError("This team is full!")
 
         position = data['position']
-        position_valid = player_set.model.Position.valid_position(team=team, position=position)
+        position_valid = player_set.model.PlayerPositions.valid_position(team=team, position=position)
         if not position_valid:
             raise serializers.ValidationError("This is not an available position for this team!")
 

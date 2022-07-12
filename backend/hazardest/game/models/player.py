@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from .card import Card
+from .choices import PlayerPositions, PlayerTeams
 
 
 class Player(models.Model):
@@ -9,43 +10,36 @@ class Player(models.Model):
     def __str__(self):
         return f'Player {self.user} | {self.game}'
 
-    class Team(models.IntegerChoices):
-        ONE = 1
-        TWO = 2
-
-    class Position(models.IntegerChoices):
-        NORTH = 1
-        EAST = 2
-        SOUTH = 3
-        WEST = 4
-
-        @staticmethod
-        def valid_position(team, position):
-            valid_team_positions = {
-                1: (1, 3),
-                2: (2, 4)
-            }
-            return position in valid_team_positions[team]
-
-        @staticmethod
-        def left_of(position):
-            return {
-                1: 2,
-                2: 3,
-                3: 4,
-                4: 1
-            }[position]
+    class Meta:
+        unique_together = [
+            ['user', 'game'],
+            ['team', 'position']
+        ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     game = models.ForeignKey('Game', on_delete=models.RESTRICT)
-    team = models.PositiveSmallIntegerField(choices=Team.choices)
-    position = models.PositiveSmallIntegerField(choices=Position.choices)
+
+    team = models.CharField(
+        max_length=3,
+        choices=PlayerTeams.choices,
+        # default=None,
+        blank=False
+    )
+
+    position = models.CharField(
+        max_length=1,
+        choices=PlayerPositions.choices,
+        # default=None,
+        blank=False
+    )
 
     cards = models.ManyToManyField(Card)
 
+    # is_turn = models.BooleanField(default=False)
+
     def player_to_the_left(self):
-        pos_index = self.Position.left_of(self.position)
-        return self.game.player_set.get(position=pos_index)
+        left_position = PlayerPositions.left_of(self.position)
+        return self.game.player_set.get(position=left_position)
 
     # def cards(self):
     #     return self.cards.all()
@@ -144,3 +138,5 @@ class Player(models.Model):
     #     else:
     #         print("Playing last card.")
     #         return self.cards.pop()
+
+    # def play_card(self):

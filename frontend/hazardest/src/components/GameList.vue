@@ -5,10 +5,8 @@
         <button type="button" class="btn btn-lg btn-primary col-4 mx-auto my-lg" data-bs-toggle="modal"
                 data-bs-target="#staticBackdrop">
           Create New Game
-          <div v-if="!this.user" class="alert alert-warning" role="alert">Must be logged in!
-          </div>
-
         </button>
+        <div v-if="!this.user" class="alert alert-warning" role="alert">Must be logged in!</div>
       </div>
     </div>
   </div>

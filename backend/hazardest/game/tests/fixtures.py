@@ -1,21 +1,48 @@
 from django.contrib.auth.models import User
 
 from ..models.game import Game
+from ..models.hand import Hand
 from ..models.player import Player
+
+from ..models.choices import PlayerTeams, PlayerPositions
 
 
 def create_game_with_players():
-    for name in ('alice', 'bob', 'charley', 'diane'):
-        User.objects.create_user(username=name, email=f'{name}@{name}.org')
+    test_players = {
+        'alice': {
+            'team': PlayerTeams.RED,
+            'position': PlayerPositions.NORTH
+        },
+        'bob': {
+            'team': PlayerTeams.BLACK,
+            'position': PlayerPositions.EAST
+        },
+        'charlie': {
+            'team': PlayerTeams.RED,
+            'position': PlayerPositions.SOUTH
+        },
+        'diane': {
+            'team': PlayerTeams.BLACK,
+            'position': PlayerPositions.WEST
+        }
+    }
+
+    for test_player in test_players.keys():
+        User.objects.create_user(username=test_player, email=f'{test_player}@{test_player}.org')
 
     new_game = Game.objects.create(creator=User.objects.get_by_natural_key('alice'))
 
-    for position, test_user in enumerate(User.objects.all()):
-        # Kinda silly I guess, I don't love these team/position enums...
-
-        position += 1
-        team = 1 if position % 2 else 2
-
-        Player.objects.create(user=test_user, game=new_game, position=position, team=team)
+    for test_user in User.objects.all():
+        Player.objects.create(user=test_user,
+                              game=new_game,
+                              team=test_players[test_user.username]['team'],
+                              position=test_players[test_user.username]['position'])
 
     return new_game
+
+# def create_hand_in_game():
+#     game = Game.objects.get(pk=1)
+#
+#     a = game.player_set.get(user__username='alice')
+#     new_hand = Hand(game=game, dealer=a)
+#     return new_hand

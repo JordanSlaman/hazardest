@@ -1,12 +1,16 @@
 import random
 
 from django.db import models
-#
+
 from .player import Player
 from .card import Card
 
 
 class Hand(models.Model):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.deal()
 
     def __str__(self):
         return f'Hand {self.pk}'
@@ -17,6 +21,18 @@ class Hand(models.Model):
     active_player = models.OneToOneField(Player, related_name='ActivePlayer', null=True, on_delete=models.CASCADE)
 
     revealed_card = models.ForeignKey(Card, null=True, on_delete=models.PROTECT)
+
+    # trump
+    # team_who_picked_trump
+    # dealer_alone_bool?
+
+    # states
+        # dealer trump 1
+        # anyone calls trump 2
+        # play 5 tricks, determine points
+        # complete
+
+    # set player.is_turn?
 
     def deal(self):
         cards = list(Card.objects.all())

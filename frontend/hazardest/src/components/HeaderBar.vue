@@ -2,9 +2,9 @@
 
   <div class="hazardest-header bg-dark text-white">
 
-    <header class="py-3 mb-3">
+    <header class="p-3 mb-3">
 
-      <div class="container-fluid d-grid gap-3 align-items-center" style="grid-template-columns: 1fr 2fr;">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between" style="grid-template-columns: 1fr 2fr;">
 
         <div class="dropdown">
           <a href="#"

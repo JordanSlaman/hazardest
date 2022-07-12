@@ -1,11 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from .hand import Hand
+from .choices import GameStates
 from .log_entry import LogEntry
 
 
 class Game(models.Model):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # self.deal()
 
     def __str__(self):
         return f'Game {self.pk} - {self.creator} - {self.game_state}'
@@ -15,38 +21,28 @@ class Game(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
-    # State
-    WAITING = 'WT'
-    IN_PROGRESS = 'IP'
-    ABANDONED = 'AB'
-    OVER = 'OV'
-
-    GAME_STATE_CHOICES = [
-        (WAITING, 'Waiting for Players'),
-        (IN_PROGRESS, 'In Progress'),
-        (ABANDONED, 'Abandoned'),
-        (OVER, 'Over')
-    ]
     game_state = models.CharField(
         max_length=2,
-        choices=GAME_STATE_CHOICES,
+        choices=GameStates.choices,
         default='WT',
+        blank=False
     )
 
     # Options?
     # turn limit timer
     # select dealer?
 
-
     # Teams
-    team_one_points = models.PositiveSmallIntegerField(default=0)
-    team_two_points = models.PositiveSmallIntegerField(default=0)
+    team_red_points = models.PositiveSmallIntegerField(default=0)
+    team_black_points = models.PositiveSmallIntegerField(default=0)
 
     # Hands
     hands_played = models.PositiveSmallIntegerField(default=0)
     active_hand = models.ForeignKey(Hand, null=True, related_name='active_hand', on_delete=models.CASCADE)
 
     def log(self, log_text):
+        if settings.DEBUG:
+            print(log_text)
         LogEntry.objects.create(game=self, log_text=log_text)
 
     # Players
@@ -59,7 +55,8 @@ class Game(models.Model):
 
         dealer = self.player_set.get(user=self.creator)
         self.active_hand = Hand(game=self, dealer=dealer)
-        self.game_state = self.IN_PROGRESS
+        self.active_hand.save()
+        self.game_state = GameStates.IN_PROGRESS
         self.log('Starting new game...')
         self.save()
 

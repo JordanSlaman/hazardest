@@ -1,6 +1,58 @@
 from django.db import models
 
-# class Trick:
+from .card import Card
+from .hand import Hand
+from .player import Player
+
+from .choices import CardSuits
+
+
+class Trick(models.Model):
+    hand = models.ForeignKey(Hand, on_delete=models.CASCADE)
+
+    # Todo not-null when trump determined
+    suit_trump = models.IntegerField(null=True, choices=CardSuits.choices)
+    suit_lead = models.IntegerField(null=True, choices=CardSuits.choices)
+
+    cards_played = models.ManyToManyField(Card)
+    card_winning = models.ForeignKey(Card, related_name='winning_card', null=True, on_delete=models.RESTRICT)
+    player_winning = models.ForeignKey(Player, null=True, on_delete=models.RESTRICT)
+
+    # points worth?
+    # states? while trick not over? -> less than 4 played
+
+    def play_card(self, player, card):
+        # todo leading suit
+
+        active_player = self.hand.active_player
+
+        if not player == active_player:
+            raise Exception('Not your turn...')
+
+        # elif trick over -> cards == 4?
+
+        else:
+            active_player.cards.remove(card)
+            self.cards_played.add(card) # dealing too many somehow
+
+            if self.cards_played.count() == 1 or Card.higher_value(card,
+                                                                   self.card_winning,
+                                                                   leading_suit=self.suit_lead,
+                                                                   trump_suit=self.suit_trump):
+                self.card_winning = card
+                self.player_winning = active_player
+
+            self.hand.game.log(f'{active_player.user.username} played a {card}.')
+            self.hand.game.log(f'{self.player_winning.user.username} is winning the trick with {self.card_winning}.')
+            self.active_player = active_player.player_to_the_left()
+            self.hand.game.log(f'It is now {active_player.user.username}\'s turn.')
+            self.save()
+
+    def compare_cards(self):
+        pass
+
+    def update_winner(self):
+        pass
 
     # def __str__(self):
     #     return f'Trick {} - Game {self.game}'

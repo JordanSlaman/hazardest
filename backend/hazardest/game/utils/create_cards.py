@@ -1,6 +1,9 @@
 from ..models.card import Card
+from ..models.choices import CardValues, CardSuits
 
 
 def create_cards():
-    cards = [Card(suit=suit, value=value) for value in Card.Value.values for suit in Card.Suit.values]
+    cards = [
+        Card(suit=suit, value=value)  for suit in CardSuits for value in CardValues
+    ]
     Card.objects.bulk_create(cards)
