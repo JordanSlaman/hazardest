@@ -4,11 +4,12 @@
 
     <header class="p-3 mb-3">
 
-      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between" style="grid-template-columns: 1fr 2fr;">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between"
+           style="grid-template-columns: 1fr 2fr;">
 
         <div class="dropdown">
           <a href="#"
-             class="d-flex align-items-center col-lg-4 mb-2 mb-lg-0 link-light text-decoration-none dropdown-toggle"
+             class="header-logo d-flex align-items-center col-lg-4 mb-2 mb-lg-0 link-light text-decoration-none dropdown-toggle"
              id="dropdownNavLink" data-bs-toggle="dropdown" aria-expanded="false">
             <svg class="bi me-2" width="40" height="32">
               <use xlink:href="#bootstrap"></use>
@@ -16,7 +17,8 @@
             Hazardest
           </a>
           <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownNavLink" style="">
-            <li><a class="dropdown-item" href="#" aria-current="page">View Games</a></li>
+            <li><a class="dropdown-item" href="#/" aria-current="page">Home</a></li>
+            <li><a class="dropdown-item" href="#/games" aria-current="page">View Games</a></li>
             <li v-if="user"><a class="dropdown-item" href="#">Create Game</a></li>
             <li>
               <hr class="dropdown-divider">
@@ -62,4 +64,24 @@ export default {
 
 <style scoped>
 
+.header-logo {
+  font-family: "Calligraphy", Helvetica, Arial, sans-serif;
+  font-size: 30pt;
+  line-height: 0;
+}
+
+/*.header-logo .dropdown-toggle::after {*/
+/*  padding-left: 30px;*/
+/*}*/
+
+.header-logo.dropdown-toggle::after {
+  display: inline-block;
+  margin: 8px 0 0 10px;
+  vertical-align: .255em;
+  content: "";
+  border-top: .2em solid;
+  border-right: .2em solid transparent;
+  border-bottom: 0;
+  border-left: .2em solid transparent;
+}
 </style>

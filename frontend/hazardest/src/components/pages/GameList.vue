@@ -1,4 +1,6 @@
 <template>
+  <HeaderBar/>
+
   <div class="container">
     <div class="col">
       <div class="row">
@@ -12,24 +14,25 @@
   </div>
 
   <!-- New Game Modal -->
-  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-       aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel">Create New Game</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          Options?
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Create</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <CreateGame/>
+<!--  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"-->
+<!--       aria-labelledby="staticBackdropLabel" aria-hidden="true">-->
+<!--    <div class="modal-dialog">-->
+<!--      <div class="modal-content">-->
+<!--        <div class="modal-header">-->
+<!--          <h5 class="modal-title" id="staticBackdropLabel">Create New Game</h5>-->
+<!--          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--        </div>-->
+<!--        <div class="modal-body">-->
+<!--          Options?-->
+<!--        </div>-->
+<!--        <div class="modal-footer">-->
+<!--          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
+<!--          <button type="button" class="btn btn-primary">Create</button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
 
 
   <div class="container">
@@ -37,8 +40,8 @@
       <thead>
       <tr>
         <th scope="col">Game #</th>
-        <th scope="col">Team 1</th>
-        <th scope="col">Team 2</th>
+        <th scope="col">Red Team</th>
+        <th scope="col">Black Team</th>
         <th scope="col">Status</th>
         <th scope="col">Created</th>
       </tr>
@@ -104,9 +107,16 @@
 </template>
 
 <script>
+import HeaderBar from '../HeaderBar.vue'
+import CreateGame from "@/components/modals/CreateGame";
+
 export default {
   name: "GameList",
-  inject: ['user']
+  inject: ['user'],
+  components: {
+    CreateGame,
+    HeaderBar,
+  }
 }
 </script>
 

@@ -1,10 +1,10 @@
 <template>
-  <h1>HI</h1>
+404!
 </template>
 
 <script>
 export default {
-  name: "HomePage"
+  name: "NotFound"
 }
 </script>
 

@@ -1,29 +1,31 @@
 <template>
-  <!--  <HomePage/>-->
-  <HeaderBar>{{ user }}</HeaderBar>
-  <GameList>{{ user }}</GameList>
-
-  <!--  <img alt="Vue logo" src="./assets/logo.png">-->
-  <!--  <h1 :id="magic">{{ message }}</h1>-->
-  <!--  <button @click="increment">count is: {{ count }}</button>-->
+  <component :is="currentView"/>
 </template>
 
 <script>
 import axios from "axios";
 import Cookies from 'js-cookie'
 
-// import HomePage from './components/HomePage.vue'
-import HeaderBar from './components/HeaderBar.vue'
-import GameList from './components/GameList.vue'
+import GameList from './components/pages/GameList.vue'
+import GameFrame from "@/components/pages/GameFrame";
+import HomePage from './components/pages/HomePage.vue'
+import NotFound from './components/pages/NotFound.vue'
+
+const routes = {
+  '/': HomePage,
+  '/games': GameList,
+  '/game': GameFrame
+}
 
 export default {
   components: {
-    // HomePage,
-    HeaderBar,
-    GameList
+    HomePage,
+    GameList,
+    GameFrame
   },
   data() {
     return {
+      currentPath: window.location.hash,
       user: null
     }
   },
@@ -70,8 +72,16 @@ export default {
           })
     }
   },
+  computed: {
+    currentView() {
+      return routes[this.currentPath.slice(1) || '/'] || NotFound
+    }
+  },
   mounted() {
-    this.get_user()
+    this.get_user();
+    window.addEventListener('hashchange', () => {
+      this.currentPath = window.location.hash
+    })
   },
   provide() {
     return {
@@ -86,4 +96,10 @@ export default {
 </script>
 
 <style>
+
+@font-face {
+  font-family: "Calligraphy";
+  src: local("Calligraphy"),   url(./assets/fonts/Calligraphy-D4pm.ttf) format("truetype");
+}
+
 </style>
