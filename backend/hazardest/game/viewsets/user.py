@@ -22,16 +22,16 @@ class UserViewSet(viewsets.ModelViewSet):
     def active(self, request):
         return Response(UserSerializer(request.user, context={'request': request}).data)
 
-    @action(detail=False, methods=['post'])
-    def login(self, request):
-        # Important, this sets the session cookie on the response
-        django_login(request, request.user)
-        return Response(UserSerializer(request.user, context={'request': request}).data)
-
-    @action(detail=False, methods=['post'])
-    def logout(self, request):
-        django_logout(request)
-        return Response({})
+    # @action(detail=False, methods=['post'])
+    # def login(self, request):
+    #     # Important, this sets the session cookie on the response
+    #     django_login(request, request.user)
+    #     return Response(UserSerializer(request.user, context={'request': request}).data)
+    #
+    # @action(detail=False, methods=['post'])
+    # def logout(self, request):
+    #     django_logout(request)
+    #     return Response({})
 
 
 class GroupViewSet(viewsets.ModelViewSet):

@@ -56,9 +56,17 @@
 </template>
 
 <script>
+import {useUserStore} from '@/stores/user'
+
 export default {
   name: "HeaderBar",
-  inject: ['user', 'login', 'logout']
+  // inject: ['user', 'login', 'logout'],
+  setup() {
+    const user = useUserStore()
+    return {
+      user
+    }
+  }
 }
 </script>
 
