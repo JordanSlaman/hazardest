@@ -1,28 +1,43 @@
 import axios from 'axios'
+import md5 from 'crypto-js/md5';
 
 import {defineStore} from 'pinia'
+import {useStorage} from '@vueuse/core'
 
 export const useUserStore = defineStore(
     'user',
     {
         state: () => ({
-            token: null,
-            username: null
+            token: useStorage('token', null),
+            username: useStorage('username', null),
+            email: useStorage('email', null),
+            gravatarUrl: useStorage('gravatarUrl', null)
         }),
+        // getters: {
+        //     isAuthenticated() {
+        //             return !!this.token
+        //     }
+        // },
         actions: {
-            // async getUser(authToken) {
-            //     const loginData = await Auth.getUser(authToken).then(user => {
-            //         this.user = user
-            //     })
-            //
-            //     console.log(loginData)
-            //     const token = loginData.key
-            //
-            //     this.$patch({
-            //         username,
-            //         token
-            //     })
-            // },
+            async getUser() {
+                if (this.token) {
+                    const response = await axios.get(
+                        "http://127.0.0.1:8000/auth/user/",
+                        {
+                            headers: {'Authorization': 'Token ' + this.token},
+                        }
+                    );
+                    const email = response.data.email
+
+                    const emailHash = md5(email);
+                    const gravatarUrl = 'https://www.gravatar.com/avatar/' + emailHash.toString()
+
+                    this.$patch({
+                        email,
+                        gravatarUrl
+                    })
+                }
+            },
 
             async login(username, password) {
                 const response = await axios.post(
@@ -38,6 +53,8 @@ export const useUserStore = defineStore(
                     username,
                     token
                 })
+
+                // todo save state to browser?
 
                 return response
             },

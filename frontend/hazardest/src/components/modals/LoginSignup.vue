@@ -1,7 +1,6 @@
 <template>
 
-  <div class="modal fade" id="loginSignupModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-       aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal" id="loginSignupModal" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -82,9 +81,10 @@
 </template>
 
 <script>
-// import {Toast} from 'bootstrap'
+import {Modal} from 'bootstrap'
 
 import {useUserStore} from '@/stores/user'
+
 
 export default {
   name: "LoginSignup",
@@ -92,6 +92,7 @@ export default {
     return {
       // isActive: true,
       navLoginSelected: true,
+      loginSignupModal: null,
       formData: {
         login: {
           username: '',
@@ -113,12 +114,23 @@ export default {
     }
   },
   methods: {
+    createModal(loginSelected) {
+      this.navLoginSelected = !!loginSelected
+      this.loginSignupModal.show()
+    },
     userLogin() {
       this.user.login(this.formData.login.username, this.formData.login.password).then(res => {
+
+        // Login succeeds
+        this.user.getUser()
+
+        // Need this for linting, must use 'res' or learn what a promise is
         console.log('success', res.data);
 
-        // todo find a way to dismiss the fucking modal
+
+        // todo find a way to dismiss the fucking modal backdrop
         // this.isActive = false;
+        this.loginSignupModal.hide()
 
         // todo if homepage route to gamelist
         // this.$router.push('/games')
@@ -130,21 +142,14 @@ export default {
 
       });
 
-      // this.user.login(this.formData.login.username, this.formData.login.password)
-
     },
     userSignup() {
       this.user.signup(this.formData.signup.username, this.formData.signup.email, this.formData.signup.password1, this.formData.signup.password2)
     }
+  },
+  mounted() {
+    this.loginSignupModal = new Modal(document.getElementById('loginSignupModal'), {})
   }
-  // mounted() {
-  //   const loginSignupModal = document.getElementById('loginSignupModal');
-  //   const loginSignupNav = document.getElementById('loginSignupNav');
-  //
-  //   loginSignupModal.addEventListener('shown.bs.modal', () => {
-  //     loginSignupNav.focus();
-  //   });
-  // }
 }
 
 </script>

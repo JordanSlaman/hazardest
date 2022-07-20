@@ -11,9 +11,6 @@
           <a href="#"
              class="header-logo d-flex align-items-center col-lg-4 mb-2 mb-lg-0 link-light text-decoration-none dropdown-toggle"
              id="dropdownNavLink" data-bs-toggle="dropdown" aria-expanded="false">
-            <svg class="bi me-2" width="40" height="32">
-              <use xlink:href="#bootstrap"></use>
-            </svg>
             Hazardest
           </a>
           <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownNavLink" style="">
@@ -31,7 +28,7 @@
           <div class="flex-shrink-0 dropdown">
             <a href="#" class="d-block link-light text-decoration-none dropdown-toggle" id="dropdownUser2"
                data-bs-toggle="dropdown" aria-expanded="false">
-              <img src="https://github.com/mdo.png" alt="mdo" class="rounded-circle" width="32" height="32">
+              <img src="{{ user.gravatarUrl }}" alt="mdo" class="rounded-circle" width="32" height="32">
               {{ user.username }}
             </a>
             <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style="">
@@ -39,7 +36,9 @@
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><button @click="user.logout" class="dropdown-item">Log out</button></li>
+              <li>
+                <button @click="user.logout" class="dropdown-item">Log out</button>
+              </li>
             </ul>
           </div>
         </div>

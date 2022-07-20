@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import HeaderBar from '../HeaderBar.vue'
+import HeaderBar from '../trim/HeaderBar.vue'
 import CreateGame from "@/components/modals/CreateGame";
 
 import {useUserStore} from '@/stores/user'

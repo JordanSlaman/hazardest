@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import HeaderBar from '../HeaderBar.vue'
+import HeaderBar from '../trim/HeaderBar.vue'
 import GamePoints from "@/components/game/GamePoints";
 
 export default {

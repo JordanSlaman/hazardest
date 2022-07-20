@@ -9,8 +9,12 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.11.5",
+    "@popperjs/core": "^2.11.5",
+    "@vueuse/core": "^8.9.4",
     "axios": "^0.27.2",
+    "bootstrap": "^5.2.0",
     "core-js": "^3.8.3",
+    "crypto-js": "^4.1.1",
     "deck-of-cards": "^0.1.8",
     "lodash": "^4.17.21",
     "mutationobserver-shim": "^0.3.7",

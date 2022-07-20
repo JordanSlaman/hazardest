@@ -17,8 +17,7 @@
     <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
       <a href="#/games" role="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold">Play</a>
 
-      <!-- Button login/signup - hide if logged in? -->
-      <button type="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold" data-bs-toggle="modal"
+      <button v-if="user.token" type="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold" data-bs-toggle="modal"
               data-bs-target="#loginSignupModal">Login / Signup
       </button>
     </div>
@@ -72,15 +71,21 @@
 
     </div>
   </div>
+
+  <FooterBar/>
 </template>
 
 <script>
+import FooterBar from "@/components/trim/FooterBar";
 import LoginSignup from "@/components/modals/LoginSignup";
 import {useUserStore} from '@/stores/user'
 
 export default {
   name: "HomePage",
-  components: {LoginSignup},
+  components: {
+    FooterBar,
+    LoginSignup
+  },
 
   setup() {
     const user = useUserStore();
@@ -103,13 +108,15 @@ export default {
 #homepage-hero {
   background-image: url("../../../src/assets/img/wild_oliva.webp");
 
-  background-image: rgba(95, 1, 255, 1.0), url("../../../src/assets/img/wild_oliva.webp");
-  background-image: -webkit-radial-gradient(top, rgba(95, 1, 255, 0.5), rgba(0, 0, 0, 0.8)), url("../../../src/assets/img/wild_oliva.webp");
-  background-image: -moz-radial-gradient(top, rgba(95, 1, 255, 0.5), rgba(0, 0, 0, 0.8)), url("../../../src/assets/img/wild_oliva.webp");
-  background-image: radial-gradient(to bottom, rgba(95, 1, 255, 0.5), rgba(0, 0, 0, 0.8)), url("../../../src/assets/img/wild_oliva.webp");
+  background-image: rgba(95, 0, 255, 1.0), url("../../../src/assets/img/wild_oliva.webp");
+  background-image: -webkit-radial-gradient(top, rgba(95, 0, 255, 0.5), rgba(0, 0, 0, 0.8)), url("../../../src/assets/img/wild_oliva.webp");
+  background-image: -moz-radial-gradient(top, rgba(95, 0, 255, 0.5), rgba(0, 0, 0, 0.8)), url("../../../src/assets/img/wild_oliva.webp");
+  background-image: radial-gradient(to bottom, rgba(95, 0, 255, 0.5), rgba(0, 0, 0, 0.8)), url("../../../src/assets/img/wild_oliva.webp");
 
   /* Only works in FF, todo fux with... */
-  background-image: -moz-radial-gradient(top, rgba(95, 1, 255, 0.5), rgba(0, 0, 0, 0.8)), url("../../../src/assets/img/wild_oliva.webp");
+  background-image: -moz-radial-gradient(top, rgba(95, 0, 255, 0.5), rgba(0, 0, 0, 0.8)), url("../../../src/assets/img/wild_oliva.webp");
+
+  /*  hex 5f00ff */
 
 }
 </style>
