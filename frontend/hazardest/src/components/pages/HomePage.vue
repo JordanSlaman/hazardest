@@ -12,13 +12,18 @@
       <img src="https://getbootstrap.com/docs/5.2/examples/heroes/bootstrap-docs.png"
            class="img-fluid border rounded-3 shadow-lg mb-4" alt="Example image" loading="lazy" width="700"
            height="500">
-
     </div>
 
     <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
       <a href="#/games" role="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold">Play</a>
+
+      <!-- Button login/signup - hide if logged in? -->
+      <button type="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold" data-bs-toggle="modal"
+              data-bs-target="#loginSignupModal">Login / Signup
+      </button>
     </div>
 
+    <LoginSignup/>
   </div>
 
   <!--  Hero Signup-->
@@ -38,7 +43,7 @@
           </div>
           <div class="form-floating mb-3">
             <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
-                   style="background-image: url(&quot;moz-extension://5a516bb3-46af-408e-997b-95c82d4d401e/srcdist/assets/passwords-icon-48.png&quot;); background-repeat: no-repeat; background-size: auto 50%; background-position: 96% 50%;"
+                   style="background-repeat: no-repeat; background-size: auto 50%; background-position: 96% 50%;"
                    autocomplete="off" data-has-passwords-badge="true">
             <label for="floatingPassword">Password</label>
           </div>
@@ -70,8 +75,20 @@
 </template>
 
 <script>
+import LoginSignup from "@/components/modals/LoginSignup";
+import {useUserStore} from '@/stores/user'
+
 export default {
-  name: "HomePage"
+  name: "HomePage",
+  components: {LoginSignup},
+
+  setup() {
+    const user = useUserStore();
+
+    return {
+      user
+    }
+  }
 }
 </script>
 

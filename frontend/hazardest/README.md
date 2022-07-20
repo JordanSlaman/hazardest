@@ -22,3 +22,9 @@ yarn lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+
+#### Unused packages
+
+bootstrap - need to setup webpack?
+cookie-js

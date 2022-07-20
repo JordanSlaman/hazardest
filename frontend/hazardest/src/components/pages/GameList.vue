@@ -110,13 +110,24 @@
 import HeaderBar from '../HeaderBar.vue'
 import CreateGame from "@/components/modals/CreateGame";
 
+import {useUserStore} from '@/stores/user'
+
 export default {
   name: "GameList",
-  inject: ['user'],
+  // inject: ['user'],
   components: {
     CreateGame,
     HeaderBar,
+  },
+
+  setup() {
+    const user = useUserStore();
+
+    return {
+      user
+    }
   }
+
 }
 </script>
 

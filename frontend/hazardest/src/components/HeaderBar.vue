@@ -1,6 +1,6 @@
 <template>
 
-  <div class="hazardest-header bg-dark text-white">
+  <div class="bg-dark text-white">
 
     <header class="p-3 mb-3">
 
@@ -19,7 +19,7 @@
           <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownNavLink" style="">
             <li><a class="dropdown-item" href="#/" aria-current="page">Home</a></li>
             <li><a class="dropdown-item" href="#/games" aria-current="page">View Games</a></li>
-            <li v-if="user"><a class="dropdown-item" href="#">Create Game</a></li>
+            <li v-if="user.token"><a class="dropdown-item" href="#">Create Game</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -27,7 +27,7 @@
           </ul>
         </div>
 
-        <div v-if="user" class="d-flex align-items-center">
+        <div v-if="user.token" class="d-flex align-items-center">
           <div class="flex-shrink-0 dropdown">
             <a href="#" class="d-block link-light text-decoration-none dropdown-toggle" id="dropdownUser2"
                data-bs-toggle="dropdown" aria-expanded="false">
@@ -39,33 +39,42 @@
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a @click="logout" class="dropdown-item" href="#">Log out</a></li>
+              <li><button @click="user.logout" class="dropdown-item">Log out</button></li>
             </ul>
           </div>
         </div>
 
         <div v-else class="col-md-3 text-end">
-          <button @click="login" type="button" class="btn btn-outline-primary me-2">Login</button>
-          <button type="button" class="btn btn-primary">Sign-up</button>
+          <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal"
+                  data-bs-target="#loginSignupModal">Login / Signup
+          </button>
         </div>
 
       </div>
 
     </header>
+
+    <LoginSignup/>
   </div>
 </template>
 
 <script>
+import LoginSignup from "@/components/modals/LoginSignup";
 import {useUserStore} from '@/stores/user'
 
 export default {
   name: "HeaderBar",
-  // inject: ['user', 'login', 'logout'],
+  components: {LoginSignup},
+
   setup() {
     const user = useUserStore()
     return {
       user
     }
+  },
+  mounted() {
+    // console.log('USER', this.user)
+    // console.log('USERNAME', this.user.username)
   }
 }
 </script>
