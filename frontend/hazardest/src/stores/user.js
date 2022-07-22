@@ -1,8 +1,10 @@
-import axios from 'axios'
 import md5 from 'crypto-js/md5';
 
 import {defineStore} from 'pinia'
 import {useStorage} from '@vueuse/core'
+
+import auth from '@/modules/api/auth'
+import session from '@/modules/api/session'
 
 export const useUserStore = defineStore(
     'user',
@@ -13,20 +15,13 @@ export const useUserStore = defineStore(
             email: useStorage('email', null),
             gravatarUrl: useStorage('gravatarUrl', null)
         }),
-        // getters: {
-        //     isAuthenticated() {
-        //             return !!this.token
-        //     }
-        // },
+        getters: {
+            isAuthenticated: (state) => !!state.token,
+        },
         actions: {
             async getUser() {
                 if (this.token) {
-                    const response = await axios.get(
-                        "http://127.0.0.1:8000/auth/user/",
-                        {
-                            headers: {'Authorization': 'Token ' + this.token},
-                        }
-                    );
+                    const response = await auth.getAccountDetails();
                     const email = response.data.email
 
                     const emailHash = md5(email);
@@ -40,51 +35,37 @@ export const useUserStore = defineStore(
             },
 
             async login(username, password) {
-                const response = await axios.post(
-                    "http://127.0.0.1:8000/auth/login/",
-                    {
+                const response = await auth.login(username, password);
+
+                if (response.status === 200) {
+                    const token = response.data.key
+                    session.defaults.headers.Authorization = `Token ${token}`
+                    this.$patch({
                         username,
-                        password
-                    }
-                );
-                const token = response.data.key
-
-                this.$patch({
-                    username,
-                    token
-                })
-
-                // todo save state to browser?
+                        token
+                    })
+                    await this.getUser()
+                }
 
                 return response
             },
             async logout() {
-                const response = await axios.post(
-                    "http://127.0.0.1:8000/auth/logout/"
-                );
-                const x = response.data
-                console.log(x)
+                const response = await auth.logout();
 
                 this.$patch({
+                    token: null,
                     username: null,
-                    token: null
+                    email: null,
+                    gravatarUrl: null
                 })
 
                 return response
             },
             async signup(username, email, password1, password2) {
-                const response = await axios.post(
-                    "http://127.0.0.1:8000/auth/registration/",
-                    {
-                        username,
-                        email,
-                        password1,
-                        password2
-                    }
-                );
-                const x = response.data
-                console.log(x)
-                // todo stuff
+                const response = await auth.createAccount(username, password1, password2, email);
+
+                // Token
+                // getUser
 
                 return response
             }

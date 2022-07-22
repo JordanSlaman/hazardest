@@ -15,11 +15,12 @@ I attempt to build a fully functional online multiplayer web game, touching all 
 
 
 #### Infrastructure
-- TBD
+- TBD (fly.io?)
 
 ### Assets
 
 https://www.toptal.com/designers/subtlepatterns/wild-oliva/
+
 https://www.fontspace.com/calligraphy-font-f29723
 
 <!-- https://github.com/pakastin/deck-of-cards -->

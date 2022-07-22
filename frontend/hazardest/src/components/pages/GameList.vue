@@ -13,27 +13,7 @@
     </div>
   </div>
 
-  <!-- New Game Modal -->
   <CreateGame/>
-<!--  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"-->
-<!--       aria-labelledby="staticBackdropLabel" aria-hidden="true">-->
-<!--    <div class="modal-dialog">-->
-<!--      <div class="modal-content">-->
-<!--        <div class="modal-header">-->
-<!--          <h5 class="modal-title" id="staticBackdropLabel">Create New Game</h5>-->
-<!--          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--        </div>-->
-<!--        <div class="modal-body">-->
-<!--          Options?-->
-<!--        </div>-->
-<!--        <div class="modal-footer">-->
-<!--          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
-<!--          <button type="button" class="btn btn-primary">Create</button>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-
 
   <div class="container">
     <table class="table table-striped table-sm">
@@ -107,10 +87,11 @@
 </template>
 
 <script>
-import HeaderBar from '../trim/HeaderBar.vue'
-import CreateGame from "@/components/modals/CreateGame";
+import HeaderBar from '@/components/trim/HeaderBar.vue'
+import CreateGame from '@/components/modals/CreateGame';
 
 import {useUserStore} from '@/stores/user'
+import {gameList} from '@/modules/api/game-list'
 
 export default {
   name: "GameList",
@@ -119,13 +100,20 @@ export default {
     CreateGame,
     HeaderBar,
   },
-
   setup() {
     const user = useUserStore();
 
     return {
       user
     }
+  },
+  data() {
+    return {
+      games: null
+    }
+  },
+  mounted() {
+    this.games = gameList(this.user.token)
   }
 
 }

@@ -36,14 +36,20 @@ CORS_ALLOWED_ORIGINS = [
 
 INSTALLED_APPS = [
     # 'corsheaders',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
     'dj_rest_auth',
+    'dj_rest_auth.registration',
 
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
+    'django.contrib.messages',
 
     'rest_framework',
     'rest_framework.authtoken',
@@ -87,7 +93,14 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication'
     ]
+
 }
 
 # Database
@@ -128,6 +141,8 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+SITE_ID = 1
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/

@@ -32,7 +32,7 @@ def create_game_with_players():
 
     new_game = Game.objects.create(creator=User.objects.get_by_natural_key('alice'))
 
-    for test_user in User.objects.all():
+    for test_user in User.objects.exclude(is_staff=True):
         Player.objects.create(user=test_user,
                               game=new_game,
                               team=test_players[test_user.username]['team'],

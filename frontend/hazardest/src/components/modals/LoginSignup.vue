@@ -13,64 +13,79 @@
         </div>
 
         <div class="modal-body">
+          <form class="p-4 p-md-5">
 
-          <!-- Login-->
-          <form v-if="navLoginSelected" class="p-4 p-md-5">
+            <!--Username-->
             <div class="form-floating mb-3">
-              <input v-model="formData.login.username" type="email" class="form-control" id="floatingInput"
-                     placeholder="name@example.com">
-              <label for="floatingInput">Username or Email address</label>
-            </div>
-            <div class="form-floating mb-3">
-              <input v-model="formData.login.password" type="password" class="form-control" id="floatingPassword"
-                     placeholder="Password"
-                     style="background-repeat: no-repeat; background-size: auto 50%; background-position: 96% 50%;"
-                     autocomplete="off" data-has-passwords-badge="true">
-              <label for="floatingPassword">Password</label>
-            </div>
-
-            <button @click="userLogin(formData.login.username, formData.login.password)" type="button"
-                    class="btn btn-outline-primary w-100">Login
-            </button>
-          </form>
-
-          <!-- Signup-->
-          <form v-if="!navLoginSelected" class="p-4 p-md-5">
-            <div class="form-floating mb-3">
-              <input v-model="formData.signup.username" type="username" class="form-control" id="floatingInput"
-                     placeholder="coolplayer123">
+              <input v-model="formData.fields.username" type="email" class="form-control" id="floatingInput"
+                     placeholder="Username">
               <label for="floatingInput">Username</label>
             </div>
-            <div class="form-floating mb-3">
-              <input v-model="formData.signup.email" type="email" class="form-control" id="floatingInput"
+            <div v-if="formData.errors.username" class="alert alert-warning p-0" role="alert">
+              {{ formData.errors.username }}
+            </div>
+
+            <!--Email-->
+            <div v-if="!navLoginSelected" class="form-floating mb-3">
+              <input v-model="formData.fields.email" type="email" class="form-control" id="floatingInput"
                      placeholder="name@example.com">
               <label for="floatingInput">Email address</label>
             </div>
+            <div v-if="formData.errors.email" class="alert alert-warning p-0" role="alert">
+              {{ formData.errors.email }}
+            </div>
+
+            <!--Password-->
             <div class="form-floating mb-3">
-              <input v-model="formData.signup.password1" type="password" class="form-control" id="floatingPassword"
+              <input v-model="formData.fields.password" type="password" class="form-control" id="floatingPassword"
                      placeholder="Password"
                      style="background-repeat: no-repeat; background-size: auto 50%; background-position: 96% 50%;"
                      autocomplete="off" data-has-passwords-badge="true">
               <label for="floatingPassword">Password</label>
             </div>
-            <div class="form-floating mb-3">
-              <input v-model="formData.signup.password2" type="passwordConfirm" class="form-control"
-                     id="floatingPassword" placeholder="Password"
+            <div v-if="formData.errors.password" class="alert alert-warning p-0" role="alert">
+              {{ formData.errors.password }}
+            </div>
+
+            <!--Password Confirm-->
+            <div v-if="!navLoginSelected" class="form-floating mb-3">
+              <input v-model="formData.fields.passwordConfirm" type="password" class="form-control"
+                     id="floatingPassword" placeholder="Confirm Password"
                      style="background-repeat: no-repeat; background-size: auto 50%; background-position: 96% 50%;"
                      autocomplete="off" data-has-passwords-badge="true">
               <label for="floatingPassword">Confirm Password</label>
             </div>
+            <div v-if="formData.errors.passwordConfirm" class="alert alert-warning p-0" role="alert">
+              {{ formData.errors.passwordConfirm }}
+            </div>
 
-            <button
-                @click="userSignup()"
-                type="button" class="btn btn-outline-primary w-100">Sign-up
-            </button>
+            <!--Submit Button-->
+            <div class="form-floating mb-3">
+              <button v-if="navLoginSelected"
+                      @click="userLogin(formData.fields.username, formData.fields.password)"
+                      type="button"
+                      class="btn btn-outline-primary w-100">Login
+              </button>
+              <button
+                  v-if="!navLoginSelected"
+                  @click="userSignup(formData.fields.username, formData.fields.email, formData.fields.password, formData.fields.passwordConfirm)"
+                  type="button" class="btn btn-outline-primary w-100">Sign-up
+              </button>
+            </div>
 
-            <hr class="my-4">
-            <small class="text-muted">By clicking Sign up, you agree to the terms of use.</small>
+
+            <!--Signup Disclaimer-->
+            <hr class="my-4" v-if="!navLoginSelected">
+            <small v-if="!navLoginSelected" class="text-muted">By clicking Sign up, you agree to the terms of
+              use.</small>
+
+
+            <!--General Error-->
+            <div v-if="formData.errors.generic" class="alert alert-warning p-0" role="alert">
+              {{ formData.errors.generic }}
+            </div>
 
           </form>
-
 
         </div>
 
@@ -85,7 +100,6 @@ import {Modal} from 'bootstrap'
 
 import {useUserStore} from '@/stores/user'
 
-
 export default {
   name: "LoginSignup",
   data() {
@@ -94,16 +108,21 @@ export default {
       navLoginSelected: true,
       loginSignupModal: null,
       formData: {
-        login: {
-          username: '',
-          password: ''
-        },
-        signup: {
+        submitFailed: false,
+        fields: {
           username: '',
           email: '',
-          password1: '',
-          password2: ''
+          password: '',
+          passwordConfirm: ''
+        },
+        errors: {
+          username: '',
+          email: '',
+          password: '',
+          passwordConfirm: '',
+          generic: ''
         }
+
       }
     }
   },
@@ -118,34 +137,49 @@ export default {
       this.navLoginSelected = !!loginSelected
       this.loginSignupModal.show()
     },
+    handleErrors(responseData) {
+      const formErrors = this.formData.errors
+
+      if (responseData['non_field_errors']) {
+        formErrors.generic = responseData['non_field_errors'][0]
+      } else if (responseData['username']) {
+        formErrors.username = responseData['username']
+      }
+    },
     userLogin() {
-      this.user.login(this.formData.login.username, this.formData.login.password).then(res => {
+      const self = this
+      const formFields = self.formData.fields
 
-        // Login succeeds
-        this.user.getUser()
+      // formFields.submitFailed = false
+      self.user.login(formFields.username, formFields.password).then(function (response) {
 
-        // Need this for linting, must use 'res' or learn what a promise is
-        console.log('success', res.data);
-
-
-        // todo find a way to dismiss the fucking modal backdrop
-        // this.isActive = false;
-        this.loginSignupModal.hide()
+        console.log(response.data)  // for linting, maybe shouldn't log the token
+        self.loginSignupModal.hide()
 
         // todo if homepage route to gamelist
-        // this.$router.push('/games')
+        // self.$router.push('/games')
 
-      }).catch(error => {
-        console.log('fail', error);
-
-        // hande errors in UI
-
+      }).catch(function (error) {
+        if (error.response) {
+          self.handleErrors(error.response.data)
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
       });
 
     },
     userSignup() {
-      this.user.signup(this.formData.signup.username, this.formData.signup.email, this.formData.signup.password1, this.formData.signup.password2)
-    }
+      const formFields = this.formData.fields
+      this.user.signup(formFields.username, formFields.email, formFields.password, formFields.password)
+    },
+
   },
   mounted() {
     this.loginSignupModal = new Modal(document.getElementById('loginSignupModal'), {})
