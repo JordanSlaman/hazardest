@@ -16,7 +16,7 @@
           <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownNavLink" style="">
             <li><a class="dropdown-item" href="#/" aria-current="page">Home</a></li>
             <li><a class="dropdown-item" href="#/games" aria-current="page">View Games</a></li>
-            <li v-if="user.token"><a class="dropdown-item" href="#">Create Game</a></li>
+            <li v-if="user.isAuthenticated"><a class="dropdown-item" href="#">Create Game</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -24,20 +24,20 @@
           </ul>
         </div>
 
-        <div v-if="user.token" class="d-flex align-items-center">
+        <div v-if="user.isAuthenticated" class="d-flex align-items-center">
           <div class="flex-shrink-0 dropdown">
-            <a href="#" class="d-block link-light text-decoration-none dropdown-toggle" id="dropdownUser2"
+            <a href="#" class="d-block link-light text-decoration-none dropdown-toggle" id="dropdownUser"
                data-bs-toggle="dropdown" aria-expanded="false">
-              <img src="{{ user.gravatarUrl }}" alt="mdo" class="rounded-circle" width="32" height="32">
+              <img v-bind:src="user.gravatarUrl" v-bind:alt="user.username" class="rounded-circle" width="32" height="32">
               {{ user.username }}
             </a>
-            <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style="">
+            <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser" style="">
               <li><a class="dropdown-item" href="#">Profile</a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>
               <li>
-                <button @click="user.logout" class="dropdown-item">Log out</button>
+                <button @click="clickedLogin = true; user.logout()" class="dropdown-item">Log out</button>
               </li>
             </ul>
           </div>
@@ -45,7 +45,10 @@
 
         <div v-else class="col-md-3 text-end">
           <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal"
-                  data-bs-target="#loginSignupModal">Login / Signup
+                  data-bs-target="#loginSignupModal" @click="clickedLogin = true">Login
+          </button>
+          <button type="button" class="btn btn-outline-secondary me-2" data-bs-toggle="modal"
+                  data-bs-target="#loginSignupModal" @click="clickedLogin = false">Signup
           </button>
         </div>
 
@@ -53,7 +56,7 @@
 
     </header>
 
-    <LoginSignup/>
+    <LoginSignup nav-login-selected="clickedLogin"/>
   </div>
 </template>
 
@@ -65,8 +68,17 @@ export default {
   name: "HeaderBar",
   components: {LoginSignup},
 
+  data() {
+    return {
+      clickedLogin: true
+    }
+  },
+
   setup() {
     const user = useUserStore()
+
+    console.log(user)
+
     return {
       user
     }

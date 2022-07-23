@@ -29,16 +29,17 @@ ALLOWED_HOSTS = []
 CORS_ALLOWED_ORIGINS = [
     # "https://domain.com",
     # "https://api.domain.com",
-    "http://localhost:8080"
+    os.environ.get('DJANGO_CORS_ORIGIN')
 ]
 
 # Application definition
 
 INSTALLED_APPS = [
-    # 'corsheaders',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+
+    'corsheaders',
 
     'dj_rest_auth',
     'dj_rest_auth.registration',

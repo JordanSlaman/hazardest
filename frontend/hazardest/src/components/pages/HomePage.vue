@@ -17,12 +17,26 @@
     <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
       <a href="#/games" role="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold">Play</a>
 
-      <button v-if="user.token" type="button" class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold" data-bs-toggle="modal"
-              data-bs-target="#loginSignupModal">Login / Signup
+      <button v-if="!user.isAuthenticated" type="button"
+              class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold"
+              data-bs-toggle="modal"
+              data-bs-target="#loginSignupModal" @click="clickedLogin = true">
+        Login
+      </button>
+      <button v-if="!user.isAuthenticated" type="button"
+              class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold"
+              data-bs-toggle="modal"
+              data-bs-target="#loginSignupModal" @click="clickedLogin = false">
+        Signup
+      </button>
+      <button v-if="user.isAuthenticated" type="button"
+              class="btn btn-outline-info btn-lg px-4 me-sm-3 fw-bold"
+              @click="clickedLogin = true; user.logout()">
+        Log out
       </button>
     </div>
 
-    <LoginSignup/>
+    <LoginSignup nav-login-selected="clickedLogin"/>
   </div>
 
   <!--  Hero Signup-->
@@ -87,6 +101,12 @@ export default {
     LoginSignup
   },
 
+  data() {
+    return {
+      clickedLogin: true
+    }
+  },
+
   setup() {
     const user = useUserStore();
 
@@ -106,9 +126,9 @@ export default {
 }
 
 #homepage-hero {
-  background-image: url("../../../src/assets/img/wild_oliva.webp");
+  background-image: url("@/assets/img/wild_oliva.webp");
 
-  background-image: rgba(95, 0, 255, 1.0), url("../../../src/assets/img/wild_oliva.webp");
+  background-image: rgba(95, 0, 255, 1.0), url("@/assets/img/wild_oliva.webp");
   background-image: -webkit-radial-gradient(top, rgba(95, 0, 255, 0.5), rgba(0, 0, 0, 0.8)), url("../../../src/assets/img/wild_oliva.webp");
   background-image: -moz-radial-gradient(top, rgba(95, 0, 255, 0.5), rgba(0, 0, 0, 0.8)), url("../../../src/assets/img/wild_oliva.webp");
   background-image: radial-gradient(to bottom, rgba(95, 0, 255, 0.5), rgba(0, 0, 0, 0.8)), url("../../../src/assets/img/wild_oliva.webp");

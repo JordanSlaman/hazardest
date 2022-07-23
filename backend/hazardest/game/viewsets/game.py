@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404
 
 from rest_framework import status, viewsets
-from rest_framework import permissions
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from ..models.game import Game
@@ -15,7 +15,6 @@ class GameViewSet(viewsets.ModelViewSet):
     """
     queryset = Game.objects.all().order_by('-last_updated')
     serializer_class = GameSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     # List Games
     # def list(self, request):
@@ -29,9 +28,13 @@ class GameViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     # Create Game
+    # @action(detail=True, methods=['post'])
+    # @permission_classes([IsAuthenticated])
+    # def create(self, request, pk=None):
 
     # Join Game
     @action(detail=True, methods=['post'])
+    @permission_classes([IsAuthenticated])
     def join(self, request, pk=None):
         user = self.get_object()
         serializer = GameSerializer(data=request.data)
@@ -45,6 +48,7 @@ class GameViewSet(viewsets.ModelViewSet):
 
     # Start Game
     @action(detail=True, methods=['post'])
+    @permission_classes([IsAuthenticated])
     def start_game(self, request, pk=None):
         game = get_object_or_404(self.queryset, pk=pk)
         if not game.game_full():

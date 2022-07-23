@@ -91,7 +91,7 @@ import HeaderBar from '@/components/trim/HeaderBar.vue'
 import CreateGame from '@/components/modals/CreateGame';
 
 import {useUserStore} from '@/stores/user'
-import {gameList} from '@/modules/api/game-list'
+import gameApi from '@/modules/api/game'
 
 export default {
   name: "GameList",
@@ -113,7 +113,18 @@ export default {
     }
   },
   mounted() {
-    this.games = gameList(this.user.token)
+    gameApi.gameList().then(function (response) {
+          console.log(response) // required for linting...
+
+          this.games = response.data
+        }
+    ).catch(function (error) {
+      if (error.response) {
+        console.log(error.response)
+      }
+    });
+
+    console.log(this.games)
   }
 
 }

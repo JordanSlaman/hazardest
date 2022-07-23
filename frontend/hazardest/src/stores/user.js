@@ -27,6 +27,7 @@ export const useUserStore = defineStore(
                     const emailHash = md5(email);
                     const gravatarUrl = 'https://www.gravatar.com/avatar/' + emailHash.toString()
 
+                    console.log(gravatarUrl)
                     this.$patch({
                         email,
                         gravatarUrl
@@ -44,7 +45,9 @@ export const useUserStore = defineStore(
                         username,
                         token
                     })
+                    console.log('one')
                     await this.getUser()
+                    console.log('two')
                 }
 
                 return response

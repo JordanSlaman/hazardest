@@ -7,6 +7,7 @@ I attempt to build a fully functional online multiplayer web game, touching all 
 #### Frontend
 - Vue.js
 - Bootstrap
+- https://github.com/pakastin/deck-of-cards
 
 
 #### Python Backend
@@ -19,10 +20,10 @@ I attempt to build a fully functional online multiplayer web game, touching all 
 
 ### Assets
 
-https://www.toptal.com/designers/subtlepatterns/wild-oliva/
+- https://www.toptal.com/designers/subtlepatterns/wild-oliva/
+- https://www.toptal.com/designers/subtlepatterns/dark-denim-2/ coloured green in photopea
 
-https://www.fontspace.com/calligraphy-font-f29723
+- https://www.fontspace.com/calligraphy-font-f29723
 
-<!-- https://github.com/pakastin/deck-of-cards -->
-<!-- https://www.fontspace.com/youth-touch-font-f30771 -->
+
 

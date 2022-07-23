@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import HeaderBar from '../trim/HeaderBar.vue'
+import HeaderBar from '@/components/trim/HeaderBar.vue'
 import GamePoints from "@/components/game/GamePoints";
 
 export default {
@@ -60,6 +60,7 @@ export default {
 
 <style scoped>
 #gameFrame {
-  background-color: #45a173;
+  /*background-color: #45a173;*/
+  background: url("@/assets/img/felt.webp");
 }
 </style>
