@@ -17,6 +17,7 @@
     "crypto-js": "^4.1.1",
     "deck-of-cards": "^0.1.8",
     "lodash": "^4.17.21",
+    "moment": "^2.29.4",
     "mutationobserver-shim": "^0.3.7",
     "pinia": "^2.0.16",
     "popper.js": "^1.16.1",

@@ -182,8 +182,7 @@ export default {
           self.handleErrors(error.response.data)
         }
       });
-    }
-    ,
+    },
 
   },
   mounted() {

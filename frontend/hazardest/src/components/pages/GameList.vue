@@ -2,13 +2,21 @@
   <HeaderBar/>
 
   <div class="container">
-    <div class="col">
+    <div class="col p-3">
       <div class="row">
-        <button type="button" class="btn btn-lg btn-primary col-4 mx-auto my-lg" data-bs-toggle="modal"
+        <span class="col-10"></span>
+        <button v-if="this.user.isAuthenticated" type="button" class="btn btn-outline-primary col-2 mx-auto my-lg"
+                data-bs-toggle="modal"
                 data-bs-target="#staticBackdrop">
-          Create New Game
+          New Game
         </button>
-        <div v-if="!this.user" class="alert alert-warning" role="alert">Must be logged in!</div>
+        <span v-else id="createGameLoggedOutToolTip" class="col-2" tabindex="0" data-bs-toggle="tooltip"
+              data-bs-title="Must be logged in!"
+              data-bs-placement="left">
+          <button type="button" class="btn btn-outline disabled">New Game</button>
+        </span>
+
+
       </div>
     </div>
   </div>
@@ -27,59 +35,30 @@
       </tr>
       </thead>
       <tbody>
-      <tr>
-        <td>1,001</td>
-        <td>
-          <button class="btn btn-sm btn-outline-primary" disabled>slaman</button>
-          <button class="btn btn-sm btn-primary">Join</button>
-        </td>
-        <td>
-          <button class="btn btn-sm btn-outline-primary" disabled>krista</button>
-          <button class="btn btn-sm btn-primary">Join</button>
-        </td>
-        <td>Waiting for players!</td>
-        <td>11 minutes ago</td>
-      </tr>
-      <tr>
-        <td>1,000</td>
-        <td>
-          <button class="btn btn-sm btn-outline-primary" disabled>bob</button>
-          <button class="btn btn-sm btn-primary">Join</button>
-        </td>
-        <td>
-          <button class="btn btn-sm btn-primary">Join</button>
-          <button class="btn btn-sm btn-primary">Join</button>
-        </td>
-        <td>Waiting for players!</td>
-        <td>20 minutes ago</td>
-      </tr>
-      <tr>
-        <td>999</td>
-        <td>
-          <button class="btn btn-sm btn-secondary" disabled>alice</button>
-          <button class="btn btn-sm btn-secondary" disabled>dave</button>
-        </td>
-        <td>
-          <button class="btn btn-sm btn-secondary" disabled>peter</button>
-          <button class="btn btn-sm btn-secondary" disabled>jim</button>
-        </td>
-        <td>In Progress</td>
-        <td>45 minutes ago</td>
-      </tr>
-      <tr>
-        <td>998</td>
-        <td>
-          <button class="btn btn-sm btn-outline-secondary" disabled>slaman</button>
-          <button class="btn btn-sm btn-outline-secondary" disabled>jim</button>
-        </td>
-        <td>
-          <button class="btn btn-sm btn-outline-secondary" disabled>krista</button>
-          <button class="btn btn-sm btn-outline-secondary" disabled>dave</button>
-        </td>
-        <td>Finished</td>
-        <td>2 hours ago</td>
-      </tr>
+      <tr v-for="game in this.games" :key="game.pk">
+        <td>{{ game.pk }}</td>
 
+        <td class="card">
+          <ul class="list-group list-group-flush">
+              <li class="list-group-item">{{ game.players["position"] === "N" }}</li>
+              <li class="list-group-item">{{ game.players["position"] === "S" }}</li>
+          </ul>
+<!--          <button class="btn btn-sm btn-outline-primary" disabled>slaman</button>-->
+<!--          <button class="btn btn-sm btn-primary">Join</button>-->
+        </td>
+
+        <td class="card">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item"></li>
+              <li class="list-group-item">A second item</li>
+            </ul>
+<!--          <button class="btn btn-sm btn-outline-primary" disabled>krista</button>-->
+<!--          <button class="btn btn-sm btn-primary">Join</button>-->
+        </td>
+
+        <td>{{ game.game_state }}</td>
+        <td>{{ createdAt(game) }}</td>
+      </tr>
       </tbody>
     </table>
 
@@ -87,8 +66,12 @@
 </template>
 
 <script>
+import moment from 'moment'
+import {Tooltip} from 'bootstrap'
+// import * as popper from '@popperjs/core'
+
 import HeaderBar from '@/components/trim/HeaderBar.vue'
-import CreateGame from '@/components/modals/CreateGame';
+import CreateGame from '@/components/modals/CreateGame'
 
 import {useUserStore} from '@/stores/user'
 import gameApi from '@/modules/api/game'
@@ -113,18 +96,28 @@ export default {
     }
   },
   mounted() {
+    const self = this
     gameApi.gameList().then(function (response) {
-          console.log(response) // required for linting...
-
-          this.games = response.data
-        }
-    ).catch(function (error) {
+      self.games = response.data
+    }).catch(function (error) {
       if (error.response) {
         console.log(error.response)
       }
     });
 
-    console.log(this.games)
+    if (!self.user.isAuthenticated) {
+      const tooltip = new Tooltip(document.getElementById('createGameLoggedOutToolTip'))
+
+      console.log(tooltip)
+    }
+    // const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    // const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+  },
+  methods: {
+    createdAt(game) {
+      return moment(game.created).fromNow()
+    }
   }
 
 }

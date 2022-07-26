@@ -2,7 +2,7 @@
 
   <div class="bg-dark text-white">
 
-    <header class="p-3 mb-3">
+    <header class="p-3">
 
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between"
            style="grid-template-columns: 1fr 2fr;">
@@ -44,10 +44,10 @@
         </div>
 
         <div v-else class="col-md-3 text-end">
-          <button type="button" class="btn btn-outline-primary me-2" data-bs-toggle="modal"
+          <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
                   data-bs-target="#loginSignupModal" @click="clickedLogin = true">Login
           </button>
-          <button type="button" class="btn btn-outline-secondary me-2" data-bs-toggle="modal"
+          <button type="button" class="btn btn-outline-primary btn-sm me-2" data-bs-toggle="modal"
                   data-bs-target="#loginSignupModal" @click="clickedLogin = false">Signup
           </button>
         </div>
@@ -76,9 +76,6 @@ export default {
 
   setup() {
     const user = useUserStore()
-
-    console.log(user)
-
     return {
       user
     }
