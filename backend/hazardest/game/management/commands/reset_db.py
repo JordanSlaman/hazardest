@@ -4,18 +4,19 @@ from django.contrib.auth.models import User
 
 from ...tests.fixtures import create_game_with_players
 from ...utils.create_cards import create_cards
+from ...utils.env import env_config
 
 
 class Command(BaseCommand):
-    help = 'resets the dev DB'
+    help = 'Flushes and ets up the DB for initial use'
 
     def handle(self, **options):
         call_command('flush')
 
         # create admin user
-        User.objects.create_superuser(username='admin',
-                                      email='jordan.slaman@gmail.com',
-                                      password='admin')
+        User.objects.create_superuser(username=env_config['APP_ADMIN_USERNAME'],
+                                      email=env_config['APP_ADMIN_EMAIL'],
+                                      password=env_config['APP_ADMIN_PASSWORD'])
 
         create_cards()
         create_game_with_players()

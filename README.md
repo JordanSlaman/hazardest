@@ -27,3 +27,8 @@ I attempt to build a fully functional online multiplayer web game, touching all 
 
 
 
+#### Installation
+
+- asdf
+
+asdf install
