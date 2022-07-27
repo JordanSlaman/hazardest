@@ -23,7 +23,7 @@ class Profile(models.Model):
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
             email = instance.email.lower().encode('utf-8')
-            gravatar_url = "https://www.gravatar.com/avatar/" + hashlib.md5(email).hexdigest()
+            gravatar_url = "https://www.gravatar.com/avatar/" + hashlib.md5(email).hexdigest() + "?d=identicon"
             Profile.objects.create(user=instance, gravatar_url=gravatar_url)
 
     @receiver(post_save, sender=User)

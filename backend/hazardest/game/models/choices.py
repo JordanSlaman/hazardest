@@ -26,7 +26,7 @@ class CardValues(models.IntegerChoices):
 
 
 class GameStates(models.TextChoices):
-    WAITING = 'WT', 'Waiting for Players'
+    WAITING = 'WT', 'Waiting to Start'
     IN_PROGRESS = 'IP', 'In Progress'
     ABANDONED = 'AB', 'Abandoned'
     OVER = 'OV', 'Over'

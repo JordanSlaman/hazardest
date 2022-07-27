@@ -1,13 +1,11 @@
 from django.contrib.auth.models import User, Group
-from django.contrib.auth import login as django_login
-from django.contrib.auth import logout as django_logout
 
-from rest_framework.decorators import action, permission_classes
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework import permissions
 
-from ..serializers.user import UserSerializer, GroupSerializer
+from ..serializers.user import UserSerializer, GroupSerializer, ProfileSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -21,6 +19,10 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def active(self, request):
         return Response(UserSerializer(request.user, context={'request': request}).data)
+
+    @action(detail=False, methods=['get'])
+    def profile(self, request):
+        return Response(ProfileSerializer(request.user.profile, context={'request': request}).data)
 
     # @action(detail=False, methods=['post'])
     # def login(self, request):

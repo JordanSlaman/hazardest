@@ -12,9 +12,9 @@ class Player(models.Model):
 
     class Meta:
         unique_together = [
-            ['user', 'game'],
-            ['team', 'position']
+            ['user', 'game', 'team', 'position']
         ]
+        # todo revisit about game state
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     game = models.ForeignKey('Game', on_delete=models.RESTRICT)

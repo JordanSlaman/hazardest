@@ -38,23 +38,42 @@
       <tr v-for="game in this.games" :key="game.pk">
         <td>{{ game.pk }}</td>
 
-        <td class="card">
+
+        <td>
+        <div class="card">
           <ul class="list-group list-group-flush">
-              <li class="list-group-item">{{ game.players["position"] === "N" }}</li>
-              <li class="list-group-item">{{ game.players["position"] === "S" }}</li>
+            <li class="list-group-item">
+              <MicroPlayerProfile v-if="this.playerAt(game.players, 'N')" :player="this.playerAt(game.players, 'N')"/>
+              <button v-else class="btn btn-sm btn-outline-primary">Join Game</button>
+            </li>
+            <li class="list-group-item">
+              <MicroPlayerProfile v-if="this.playerAt(game.players, 'S')" :player="this.playerAt(game.players, 'S')"/>
+              <button v-else class="btn btn-sm btn-outline-primary">Join Game</button>
+            </li>
           </ul>
-<!--          <button class="btn btn-sm btn-outline-primary" disabled>slaman</button>-->
-<!--          <button class="btn btn-sm btn-primary">Join</button>-->
+        </div>
         </td>
 
-        <td class="card">
+        <td>
+          <div class="card">
             <ul class="list-group list-group-flush">
-              <li class="list-group-item"></li>
-              <li class="list-group-item">A second item</li>
+              <li class="list-group-item">
+                <MicroPlayerProfile v-if="this.playerAt(game.players, 'E')" :player="this.playerAt(game.players, 'E')"/>
+                <button v-else :class="{ disabled: !this.user.isAuthenticated}" class="btn btn-sm btn-outline-primary">Join Game</button>
+              </li>
+              <li class="list-group-item">
+                <MicroPlayerProfile v-if="this.playerAt(game.players, 'W')" :player="this.playerAt(game.players, 'W')"/>
+                <button v-else :class="{ disabled: !this.user.isAuthenticated}" class="btn btn-sm btn-outline-primary">Join Game</button>
+              </li>
             </ul>
-<!--          <button class="btn btn-sm btn-outline-primary" disabled>krista</button>-->
-<!--          <button class="btn btn-sm btn-primary">Join</button>-->
+          </div>
         </td>
+
+<!--        TODO Join buttons -->
+
+        <!--&lt;!&ndash;          <button class="btn btn-sm btn-outline-primary" disabled>krista</button>&ndash;&gt;-->
+        <!--&lt;!&ndash;          <button class="btn btn-sm btn-primary">Join</button>&ndash;&gt;-->
+        <!--        </td>-->
 
         <td>{{ game.game_state }}</td>
         <td>{{ createdAt(game) }}</td>
@@ -66,12 +85,13 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import moment from 'moment'
 import {Tooltip} from 'bootstrap'
-// import * as popper from '@popperjs/core'
 
-import HeaderBar from '@/components/trim/HeaderBar.vue'
 import CreateGame from '@/components/modals/CreateGame'
+import HeaderBar from '@/components/trim/HeaderBar'
+import MicroPlayerProfile from '@/components/trim/MicroPlayerProfile'
 
 import {useUserStore} from '@/stores/user'
 import gameApi from '@/modules/api/game'
@@ -80,6 +100,7 @@ export default {
   name: "GameList",
   // inject: ['user'],
   components: {
+    MicroPlayerProfile,
     CreateGame,
     HeaderBar,
   },
@@ -106,21 +127,28 @@ export default {
     });
 
     if (!self.user.isAuthenticated) {
-      const tooltip = new Tooltip(document.getElementById('createGameLoggedOutToolTip'))
-
-      console.log(tooltip)
+      new Tooltip(document.getElementById('createGameLoggedOutToolTip'))
     }
-    // const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    // const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
   },
   methods: {
     createdAt(game) {
       return moment(game.created).fromNow()
+    },
+    playerAt(players, position) {
+      const key = _.findKey(players, function (o) {
+        return o.position === position;
+      })
+      return players[key]
     }
   }
 
 }
+
+
+// somehow handle player rendering by team/position
+// {{ game.players["position"] === "N" }}
+
 </script>
 
 <style scoped>

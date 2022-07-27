@@ -1,9 +1,8 @@
-import md5 from 'crypto-js/md5';
-
 import {defineStore} from 'pinia'
 import {useStorage} from '@vueuse/core'
 
 import auth from '@/modules/api/auth'
+import profile from '@/modules/api/profile'
 import session from '@/modules/api/session'
 
 export const useUserStore = defineStore(
@@ -21,17 +20,19 @@ export const useUserStore = defineStore(
         actions: {
             async getUser() {
                 if (this.token) {
-                    const response = await auth.getAccountDetails();
-                    const email = response.data.email
+                    const user_response = await auth.getAccountDetails();
 
-                    const emailHash = md5(email);
-                    const gravatarUrl = 'https://www.gravatar.com/avatar/' + emailHash.toString()
+                    console.log(user_response)
 
-                    console.log(gravatarUrl)
-                    this.$patch({
-                        email,
-                        gravatarUrl
-                    })
+                    const profile_response = await profile.getProfile();
+
+                    console.log(profile_response)
+
+
+                    // this.$patch({
+                    //     email,
+                    //     gravatarUrl
+                    // })
                 }
             },
 
