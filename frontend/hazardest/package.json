@@ -21,6 +21,8 @@
     "pinia": "^2.0.16",
     "popper.js": "^1.16.1",
     "portal-vue": "^2.1.7",
+    "stylus": "^0.58.1",
+    "stylus-loader": "^7.0.0",
     "vue": "^3.2.37",
     "vue-router": "^4.1.2"
   },

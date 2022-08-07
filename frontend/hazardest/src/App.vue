@@ -26,8 +26,7 @@ export default {
 
 </script>
 
-<style>
-
+<style lang="stylus">
 @font-face {
   font-family: "Calligraphy";
   src: local("Calligraphy"), url(./assets/fonts/Calligraphy-D4pm.ttf) format("truetype");

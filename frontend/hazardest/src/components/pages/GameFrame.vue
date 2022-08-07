@@ -1,6 +1,8 @@
 <template>
   <HeaderBar/>
 
+<!--  Bootstrap css collision?-->
+<!--  need to figure out sass or something-->
 <!--  <link rel="stylesheet" href="node_modules/deck-of-cards/example/example.css">-->
 <!--  <script src="node_modules/deck-of-cards/dist/deck.min.js"></script>-->
 
@@ -61,6 +63,9 @@ export default {
 <style scoped>
 #gameFrame {
   /*background-color: #45a173;*/
-  background: url("@/assets/img/felt.webp");
+  background: url("@/assets/img/trim/denim_bright.webp");
+
+  /* todo - not this */
+  height: 1000px;
 }
 </style>

@@ -53,4 +53,16 @@ export default {
 
 <style scoped>
 
+#redPoints {
+    /* todo - not this */
+  height: 300px;
+  min-width: 150px;
+}
+
+#blackPoints {
+    /* todo - not this */
+  height: 300px;
+  min-width: 150px;
+}
+
 </style>
