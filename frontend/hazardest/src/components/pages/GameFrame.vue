@@ -20,29 +20,29 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="col">
-        Left Player
-      </div>
-      <div class="col">
-        Centre Table
-      </div>
-      <div class="col">
-        Right Player
-      </div>
-    </div>
+<!--    <div class="row">-->
+<!--      <div class="col">-->
+<!--        Left Player-->
+<!--      </div>-->
+<!--      <div class="col">-->
+<!--        Centre Table-->
+<!--      </div>-->
+<!--      <div class="col">-->
+<!--        Right Player-->
+<!--      </div>-->
+<!--    </div>-->
 
-    <div class="row">
-      <div class="col">
-        ??
-      </div>
-      <div class="col">
-        Active Player
-      </div>
-      <div class="col">
-        ??
-      </div>
-    </div>
+<!--    <div class="row">-->
+<!--      <div class="col">-->
+<!--        ??-->
+<!--      </div>-->
+<!--      <div class="col">-->
+<!--        Active Player-->
+<!--      </div>-->
+<!--      <div class="col">-->
+<!--        ??-->
+<!--      </div>-->
+<!--    </div>-->
   </div>
 
 </template>
@@ -63,7 +63,7 @@ export default {
 <style scoped>
 #gameFrame {
   /*background-color: #45a173;*/
-  background: url("@/assets/img/trim/denim_bright.webp");
+  background: url("@/assets/img/bg/denim_bright.webp");
 
   /* todo - not this */
   height: 1000px;

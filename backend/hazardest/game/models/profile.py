@@ -19,6 +19,7 @@ class Profile(models.Model):
     wins = models.IntegerField(default=0)
     losses = models.IntegerField(default=0)
 
+
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
